@@ -422,12 +422,6 @@
     <None Include="Resources\go-up.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\NugetSource\ScintillaNet-FindReplaceDialog\ScintillaNet FindReplaceDialog\ScintillaNET FindReplaceDialog.csproj">
-      <Project>{548fd833-9a3b-41bb-9850-570afe9a91b7}</Project>
-      <Name>ScintillaNET FindReplaceDialog</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\stock-tool-clone.png" />
   </ItemGroup>
   <ItemGroup>
@@ -468,6 +462,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\particle icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScintillaNet FindReplaceDialog\ScintillaNET FindReplaceDialog.csproj">
+      <Project>{548fd833-9a3b-41bb-9850-570afe9a91b7}</Project>
+      <Name>ScintillaNET FindReplaceDialog</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

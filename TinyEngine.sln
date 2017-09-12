@@ -5,11 +5,11 @@ VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyEngine", "TinyEngine\TinyEngine.csproj", "{9910B421-012E-487E-B4A2-C574C485308A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScintillaNET FindReplaceDialog", "F:\Users\Rodit\Documents\NugetSource\ScintillaNet-FindReplaceDialog\ScintillaNet FindReplaceDialog\ScintillaNET FindReplaceDialog.csproj", "{548FD833-9A3B-41BB-9850-570AFE9A91B7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyMapEngine", "TinyMapEngine\TinyMapEngine.csproj", "{1CFB08F7-5E4E-4601-B7C1-5197CA83C5D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zBenchmark", "zBenchmark\zBenchmark.csproj", "{4A6D6174-BECF-455C-868F-B2EAB06014C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScintillaNET FindReplaceDialog", "ScintillaNet FindReplaceDialog\ScintillaNET FindReplaceDialog.csproj", "{548FD833-9A3B-41BB-9850-570AFE9A91B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{9910B421-012E-487E-B4A2-C574C485308A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9910B421-012E-487E-B4A2-C574C485308A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9910B421-012E-487E-B4A2-C574C485308A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{548FD833-9A3B-41BB-9850-570AFE9A91B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{548FD833-9A3B-41BB-9850-570AFE9A91B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{548FD833-9A3B-41BB-9850-570AFE9A91B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{548FD833-9A3B-41BB-9850-570AFE9A91B7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1CFB08F7-5E4E-4601-B7C1-5197CA83C5D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1CFB08F7-5E4E-4601-B7C1-5197CA83C5D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CFB08F7-5E4E-4601-B7C1-5197CA83C5D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{4A6D6174-BECF-455C-868F-B2EAB06014C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A6D6174-BECF-455C-868F-B2EAB06014C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A6D6174-BECF-455C-868F-B2EAB06014C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{548FD833-9A3B-41BB-9850-570AFE9A91B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{548FD833-9A3B-41BB-9850-570AFE9A91B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{548FD833-9A3B-41BB-9850-570AFE9A91B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{548FD833-9A3B-41BB-9850-570AFE9A91B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

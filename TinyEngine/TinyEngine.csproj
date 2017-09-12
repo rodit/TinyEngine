@@ -211,12 +211,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\NugetSource\ScintillaNet-FindReplaceDialog\ScintillaNet FindReplaceDialog\ScintillaNET FindReplaceDialog.csproj">
-      <Project>{548fd833-9a3b-41bb-9850-570afe9a91b7}</Project>
-      <Name>ScintillaNET FindReplaceDialog</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
@@ -227,6 +221,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScintillaNet FindReplaceDialog\ScintillaNET FindReplaceDialog.csproj">
+      <Project>{548fd833-9a3b-41bb-9850-570afe9a91b7}</Project>
+      <Name>ScintillaNET FindReplaceDialog</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
