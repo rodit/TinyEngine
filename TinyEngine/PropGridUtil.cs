@@ -144,6 +144,14 @@ namespace TinyEngine
                 return new EntityStatsEditor();
             else if (_dictionary[_key] is TinyRPG.LocaleEntryRef)
                 return new LocaleEntryEditor();
+            else if (_dictionary[_key] is TinyRPG.AssetRef)
+                return new AssetRefEditor();
+            else if (_dictionary[_key] is TinyRPG.Inventory)
+                return new InventoryEditor();
+            else if (_dictionary[_key] is TinyRPG.TinyShop)
+                return new ShopRefEditor();
+            else if (_dictionary[_key] is TinyRPG.EquipData)
+                return new EquipDataEditor();
             return base.GetEditor(editorBaseType);
         }
     }

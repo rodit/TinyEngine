@@ -55,6 +55,15 @@
       <HintPath>..\..\..\..\..\..\..\Program Files\ikvm-7.2.4630.5\bin\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="NAudio, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.0\lib\net35\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Vorbis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Vorbis.1.0.0.0\lib\net35\NAudio.Vorbis.dll</HintPath>
+    </Reference>
+    <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NVorbis.0.8.4.0\lib\NVorbis.dll</HintPath>
+    </Reference>
     <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
       <Private>True</Private>
@@ -73,11 +82,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EditEntityStatsForm.cs" />
+    <Compile Include="AnimationLoader.cs" />
+    <Compile Include="AssetBrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AssetBrowserForm.Designer.cs">
+      <DependentUpon>AssetBrowserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AssetPreviewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AssetPreviewer.Designer.cs">
+      <DependentUpon>AssetPreviewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditEquipDataForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditEquipDataForm.Designer.cs">
+      <DependentUpon>EditEquipDataForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProgressDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProgressDialog.Designer.cs">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShopRefEditor.cs" />
+    <Compile Include="EditEntityStatsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="EditEntityStatsForm.Designer.cs">
       <DependentUpon>EditEntityStatsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LocaleEntryEditForm.cs" />
+    <Compile Include="InventoryEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InventoryEditorForm.Designer.cs">
+      <DependentUpon>InventoryEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LocaleEntryEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="LocaleEntryEditForm.Designer.cs">
       <DependentUpon>LocaleEntryEditForm.cs</DependentUpon>
     </Compile>
@@ -98,10 +143,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TinyRPG\AssetRef.cs" />
+    <Compile Include="TinyRPG\Sound.cs" />
+    <Compile Include="TinyRPG\TinyEntity.cs" />
     <Compile Include="TinyRPG\Config.cs" />
     <Compile Include="InterpolatedPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TinyRPG\DialogFile.cs" />
     <Compile Include="TinyRPG\LocaleEntry.cs" />
     <Compile Include="TinyRPG\LocaleFile.cs" />
     <Compile Include="TinyRPG\MapConverter.cs" />
@@ -120,12 +169,29 @@
     <Compile Include="TinyRPG\TinyAsset.cs" />
     <Compile Include="TinyRPG\TinyDebug.cs" />
     <Compile Include="TinyRPG\TinyItem.cs" />
+    <Compile Include="TinyRPG\TinyShop.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="XmlWindowData.cs" />
+    <EmbeddedResource Include="AssetBrowserForm.resx">
+      <DependentUpon>AssetBrowserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AssetPreviewer.resx">
+      <DependentUpon>AssetPreviewer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditEntityStatsForm.resx">
       <DependentUpon>EditEntityStatsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="EditEquipDataForm.resx">
+      <DependentUpon>EditEquipDataForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InventoryEditorForm.resx">
+      <DependentUpon>InventoryEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LocaleEntryEditForm.resx">
       <DependentUpon>LocaleEntryEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressDialog.resx">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -140,15 +206,6 @@
       <DependentUpon>TinyEngineForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -179,4 +236,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <MoveToLibFolder Include="$(OutputPath)*.dll ; $(OutputPath)*.pdb ; $(OutputPath)*.xml" />
+    </ItemGroup>
+    <Move SourceFiles="@(MoveToLibFolder)" DestinationFolder="$(OutputPath)lib" OverwriteReadOnlyFiles="true" />
+  </Target>
 </Project>

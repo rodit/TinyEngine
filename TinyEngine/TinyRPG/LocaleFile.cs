@@ -7,11 +7,11 @@ namespace TinyEngine.TinyRPG
     public class LocaleFile : TinyAsset
     {
         public string LocaleName { get; set; }
-        public List<LocaleEntry> Entries { get; set; }
+        public Dictionary<string, List<LocaleEntry>> Entries { get; set; }
 
         public LocaleFile(string file) : base(file)
         {
-            Entries = new List<LocaleEntry>();
+            Entries = new Dictionary<string, List<LocaleEntry>>();
             Load();
         }
 
@@ -20,82 +20,112 @@ namespace TinyEngine.TinyRPG
             return Project.Current.GetLocale(Name);
         }
 
-        public LocaleEntry GetEntry(string key)
+        public LocaleEntry GetEntry(string group, string key)
         {
-            LocaleEntry entry = Entries.Find(x => x.Name == key);
+            if (!Entries.ContainsKey(group))
+                return null;
+            LocaleEntry entry = Entries[group].Find(x => x.Name == key);
             return entry;
         }
 
-        public LocaleEntry GetEntryOrCreate(string key, string value = "")
+        public LocaleEntry GetEntryOrCreate(string group, string key, string value = "")
         {
-            LocaleEntry entry = GetEntry(key);
+            LocaleEntry entry = GetEntry(group, key);
             if (entry != null)
                 return entry;
-            entry = new LocaleEntry(key);
-            entry.Value = value;
-            Entries.Add(entry);
+            entry = new LocaleEntry(group, key, value);
+            List<LocaleEntry> entries = Entries[group];
+            if (entries == null)
+                Entries[group] = entries = new List<LocaleEntry>();
+            entries.Add(entry);
             return entry;
         }
 
-        public string GetEntryValue(string key)
+        public string GetEntryValue(string group, string key)
         {
-            LocaleEntry entry = GetEntry(key);
+            LocaleEntry entry = GetEntry(group, key);
             if (entry == null)
                 return "";
             return entry.Value;
         }
 
-        public void AddEntry(string key, string value)
+        public void AddEntry(string group, string key, string value)
         {
-            LocaleEntry entry = GetEntry(key);
+            LocaleEntry entry = GetEntry(group, key);
             if (entry != null)
                 entry.Value = value;
             else
             {
-                entry = new LocaleEntry(key);
-                entry.Value = value;
-                Entries.Add(entry);
+                entry = new LocaleEntry(group, key, value);
+                Entries[group].Add(entry);
             }
         }
 
-        public void RemoveEntry(string key)
+        public void RemoveEntry(string group, string key)
         {
-            LocaleEntry entry = GetEntry(key);
+            LocaleEntry entry = GetEntry(group, key);
             if (entry != null)
-                Entries.Remove(entry);
+                Entries[group].Remove(entry);
         }
 
         private void Load()
         {
-            foreach (string line in File.ReadAllLines(GetPath()))
+            string def = Path.Combine(GetPath(), "lang.def");
+            foreach (string line in File.ReadAllLines(def))
             {
-                if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line))
+                if (string.IsNullOrEmpty(line.Trim()))
                     continue;
-                if (line.StartsWith("@"))
-                    LocaleName = line.Split(' ')[1].Replace(";", "");
-                string[] entry = line.Split('=');
-                if (entry.Length < 2)
-                    continue;
-                else
-                    AddEntry(entry[0], entry[1]);
+                string file = Path.Combine(GetPath(), line);
+                string group = line.Replace(".lang", "");
+                List<LocaleEntry> entries = new List<LocaleEntry>();
+                Entries[group] = entries;
+                foreach (string groupLine in File.ReadAllLines(file))
+                {
+                    if (string.IsNullOrEmpty(groupLine))
+                        entries.Add(LocaleEntry.BLANK_LINE);
+                    else if (groupLine.StartsWith("#"))
+                        entries.Add(new LocaleEntry.CommentEntry(groupLine));
+                    else
+                    {
+                        string[] parts = groupLine.Split('=');
+                        if (parts.Length == 2)
+                            entries.Add(new LocaleEntry(group, parts[0], parts[1]));
+                    }
+                }
             }
         }
 
         public void Save()
         {
-            string path = GetPath();
-            File.Delete(path);
-            StreamWriter writer = File.AppendText(path);
-            writer.NewLine = "\n";
-            writer.WriteLine("@lang " + LocaleName + ";");
-            foreach (LocaleEntry entry in Entries)
+            foreach (string group in Entries.Keys)
+                Save(group);
+        }
+
+        public void Save(string group)
+        {
+            StreamWriter def = new StreamWriter(File.OpenWrite(Path.Combine(GetPath(), "lang.def")));
+            foreach (string grp in Entries.Keys)
+                def.WriteLine(grp + ".lang");
+            def.Flush();
+            def.Close();
+            foreach (KeyValuePair<string, List<LocaleEntry>> entry in Entries)
             {
-                if (string.IsNullOrWhiteSpace(entry.Name) || string.IsNullOrWhiteSpace(entry.Value))
+                if (entry.Key != group)
                     continue;
-                writer.WriteLine(entry.Name.Trim() + "=" + entry.Value.Trim());
-                writer.Flush();
+                string langFile = entry.Key + ".lang";
+                StreamWriter lang = new StreamWriter(File.OpenWrite(Path.Combine(GetPath(), langFile)));
+                foreach (LocaleEntry lentry in entry.Value)
+                {
+                    if (lentry == LocaleEntry.BLANK_LINE)
+                        lang.WriteLine();
+                    else if (lentry is LocaleEntry.CommentEntry)
+                        lang.WriteLine(lentry.Value);
+                    else
+                        lang.WriteLine(lentry.Name + "=" + lentry.Value);
+                }
+                lang.Flush();
+                lang.Close();
             }
-            writer.Close();
         }
 
         public override string ToString()

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TinyEngine.Properties
+namespace TinyMapEditor.Properties
 {
 
 

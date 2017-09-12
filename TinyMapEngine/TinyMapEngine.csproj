@@ -1,0 +1,475 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1CFB08F7-5E4E-4601-B7C1-5197CA83C5D7}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>TinyMapEngine</RootNamespace>
+    <AssemblyName>TinyMapEngine</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;USE_2D_ARRAYS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="formatclass">
+      <HintPath>..\..\..\..\NugetSource\formatclass.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.AWT.WinForms, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.AWT.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Beans, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Beans.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Charsets, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Charsets.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Cldrdata, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Cldrdata.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Corba, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Corba.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Jdbc, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Jdbc.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Localedata, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Localedata.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Management, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Management.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Media, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Media.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Misc, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Misc.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Naming, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Naming.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Nashorn, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Nashorn.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Remoting, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Remoting.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Security, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.SwingAWT, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.SwingAWT.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Tools, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Tools.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.API, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.API.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Bind, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Bind.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Crypto, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Parse, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Parse.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Transform, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Transform.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.WebServices, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.WebServices.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.XPath, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.XPath.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime.JNI, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.Runtime.JNI.dll</HintPath>
+    </Reference>
+    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BitmapCache.cs" />
+    <Compile Include="CommandStackViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CommandStackViewer.Designer.cs">
+      <DependentUpon>CommandStackViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandRemoveParticle.cs" />
+    <Compile Include="Commands\CommandAddParticle.cs" />
+    <Compile Include="Commands\CommandRemoveMobSpawn.cs" />
+    <Compile Include="Commands\CommandAddMobSpawn.cs" />
+    <Compile Include="Commands\CommandRemoveTransparency.cs" />
+    <Compile Include="Commands\CommandAddTransparency.cs" />
+    <Compile Include="Commands\CommandRemoveLight.cs" />
+    <Compile Include="Commands\CommandFloodFill.cs" />
+    <Compile Include="Commands\CommandRemoveCollision.cs" />
+    <Compile Include="Commands\CommandAddCollision.cs" />
+    <Compile Include="Commands\CommandAddLight.cs" />
+    <Compile Include="Commands\CommandEraseTiles.cs" />
+    <Compile Include="Commands\CommandRemoveEntity.cs" />
+    <Compile Include="Commands\CommandAddEntity.cs" />
+    <Compile Include="Commands\CommandAddTileLayer.cs" />
+    <Compile Include="Commands\CommandAddTileset.cs" />
+    <Compile Include="Commands\CommandPaintTile.cs" />
+    <Compile Include="Commands\CommandRemoveTileLayer.cs" />
+    <Compile Include="Commands\CommandRemoveTileset.cs" />
+    <Compile Include="Commands\CommandRenameTileLayer.cs" />
+    <Compile Include="Commands\CommandTransformMapObject.cs" />
+    <Compile Include="Commands\CommandStack.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="ConfigEditor.cs" />
+    <Compile Include="DebugForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DebugForm.Designer.cs">
+      <DependentUpon>DebugForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Debugger.cs" />
+    <Compile Include="DialogStringInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogStringInput.Designer.cs">
+      <DependentUpon>DialogStringInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\CollisionTool.cs" />
+    <Compile Include="Editor\EntityTool.cs" />
+    <Compile Include="Editor\FloodFillTool.cs" />
+    <Compile Include="Editor\LightTool.cs" />
+    <Compile Include="Editor\MobSpawnTool.cs" />
+    <Compile Include="Editor\ObjectSelectionTool.cs" />
+    <Compile Include="Editor\ObjectTool.cs" />
+    <Compile Include="Editor\EraserTool.cs" />
+    <Compile Include="Editor\MapRenderer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Editor\OpacityTool.cs" />
+    <Compile Include="Editor\ParticleEffectTool.cs" />
+    <Compile Include="Editor\Prefab.cs" />
+    <Compile Include="Editor\TilePaintTool.cs" />
+    <Compile Include="Editor\TileSelection.cs" />
+    <Compile Include="Editor\Tool.cs" />
+    <Compile Include="GuiEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GuiEditor.Designer.cs">
+      <DependentUpon>GuiEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Gui.cs" />
+    <Compile Include="GUI\GuiComponent.cs" />
+    <Compile Include="GUI\GuiFont.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Maps\CustomProperty.cs" />
+    <Compile Include="Maps\Entity.cs" />
+    <Compile Include="Maps\Light.cs" />
+    <Compile Include="Maps\Map.cs" />
+    <Compile Include="Maps\MapExporter.cs" />
+    <Compile Include="Maps\MapLayer.cs" />
+    <Compile Include="Maps\MapObject.cs" />
+    <Compile Include="Maps\MobSpawn.cs" />
+    <Compile Include="Maps\ParticleEffect.cs" />
+    <Compile Include="Maps\TileLayer.cs" />
+    <Compile Include="Maps\Tileset.cs" />
+    <Compile Include="Maps\Transparency.cs" />
+    <Compile Include="Maps\WorldLocation.cs" />
+    <Compile Include="NewMapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewMapForm.Designer.cs">
+      <DependentUpon>NewMapForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewWorldLocationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewWorldLocationForm.Designer.cs">
+      <DependentUpon>NewWorldLocationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OffsetMapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OffsetMapForm.Designer.cs">
+      <DependentUpon>OffsetMapForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OpenMapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OpenMapForm.Designer.cs">
+      <DependentUpon>OpenMapForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OpenTilesetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OpenTilesetForm.Designer.cs">
+      <DependentUpon>OpenTilesetForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParticleEffectPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParticleEffectPreview.Designer.cs">
+      <DependentUpon>ParticleEffectPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PrefabsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PrefabsForm.Designer.cs">
+      <DependentUpon>PrefabsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="ProgressDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProgressDialog.Designer.cs">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResizeMapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ResizeMapForm.Designer.cs">
+      <DependentUpon>ResizeMapForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RoundedPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ScriptEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScriptEditorForm.Designer.cs">
+      <DependentUpon>ScriptEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptEditorTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ScriptSelectorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScriptSelectorForm.Designer.cs">
+      <DependentUpon>ScriptSelectorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TilesetsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TilesetsForm.Designer.cs">
+      <DependentUpon>TilesetsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TilesetChooser.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tiny.cs" />
+    <Compile Include="TinyEngine\LocaleEntry.cs" />
+    <Compile Include="TinyEngine\LocaleFile.cs" />
+    <Compile Include="ToolsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolsForm.Designer.cs">
+      <DependentUpon>ToolsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UInt24.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="WorldLocationsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WorldLocationsForm.Designer.cs">
+      <DependentUpon>WorldLocationsForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="CommandStackViewer.resx">
+      <DependentUpon>CommandStackViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DebugForm.resx">
+      <DependentUpon>DebugForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogStringInput.resx">
+      <DependentUpon>DialogStringInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiEditor.resx">
+      <DependentUpon>GuiEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewMapForm.resx">
+      <DependentUpon>NewMapForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewWorldLocationForm.resx">
+      <DependentUpon>NewWorldLocationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OffsetMapForm.resx">
+      <DependentUpon>OffsetMapForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OpenMapForm.resx">
+      <DependentUpon>OpenMapForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OpenTilesetForm.resx">
+      <DependentUpon>OpenTilesetForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParticleEffectPreview.resx">
+      <DependentUpon>ParticleEffectPreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrefabsForm.resx">
+      <DependentUpon>PrefabsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressDialog.resx">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="ResizeMapForm.resx">
+      <DependentUpon>ResizeMapForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScriptEditorForm.resx">
+      <DependentUpon>ScriptEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScriptSelectorForm.resx">
+      <DependentUpon>ScriptSelectorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TilesetsForm.resx">
+      <DependentUpon>TilesetsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolsForm.resx">
+      <DependentUpon>ToolsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorldLocationsForm.resx">
+      <DependentUpon>WorldLocationsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rename.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\go-down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\go-up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\NugetSource\ScintillaNet-FindReplaceDialog\ScintillaNet FindReplaceDialog\ScintillaNET FindReplaceDialog.csproj">
+      <Project>{548fd833-9a3b-41bb-9850-570afe9a91b7}</Project>
+      <Name>ScintillaNET FindReplaceDialog</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stock-tool-clone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stock-tool-eraser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stock-tool-bucket-fill.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tool-select-objects.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\insert-rectangle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stock-tool-rect-select.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\collision-painter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\light-painter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layer-tile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit-refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\visible.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mob icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\particle icon.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild">
+  </Target>
+</Project>

@@ -48,6 +48,24 @@ namespace TinyEngine.TinyRPG
                     render.PaintTileLayer(rotg, (TileLayer)layer);
                 }
             }
+            foreach (MapLayer layer in map.Layers)
+            {
+                if (layer is ObjectLayer && layer.Name == "collisions")
+                {
+                    ObjectLayer ol = (ObjectLayer)layer;
+                    foreach (MapObject obj in ol.Objects)
+                    {
+
+                        if (rot == null)
+                        {
+                            rot = new Bitmap(img.Width, img.Height);
+                            rotg = Graphics.FromImage(rot);
+                            rotg.Clip = new Region(new Rectangle(0, 0, rot.Width, rot.Height));
+                        }
+                        rotg.DrawImage(img, new RectangleF(obj.X, obj.Y, obj.Width, obj.Height - 16), new RectangleF(obj.X, obj.Y, obj.Width, obj.Height - 16), GraphicsUnit.Pixel);
+                    }
+                }
+            }
             g.Dispose();
             if (rotg != null)
                 rotg.Dispose();
@@ -61,7 +79,7 @@ namespace TinyEngine.TinyRPG
             writer.Write(mapMem.ToArray());
             mapMem.Dispose();
             writer.Write(rot != null);
-            if(rot != null)
+            if (rot != null)
             {
                 MemoryStream rotMem = new MemoryStream();
                 rot.Save(rotMem, ImageFormat.Png);
@@ -119,11 +137,12 @@ namespace TinyEngine.TinyRPG
         {
             MapObject map_info = null;
             List<MapObject> lights = new List<MapObject>();
+            List<MapObject> opaque = new List<MapObject>();
             foreach (MapLayer layer in map.Layers)
             {
                 if (layer is ObjectLayer)
                 {
-                    if (layer.Name.Equals("entities"))
+                    if (layer.Name == "entities")
                     {
                         foreach (MapObject obj in ((ObjectLayer)layer).Objects)
                         {
@@ -134,8 +153,10 @@ namespace TinyEngine.TinyRPG
                             }
                         }
                     }
-                    else if (layer.Name.Equals("lights"))
+                    else if (layer.Name == "lights")
                         lights.AddRange(((ObjectLayer)layer).Objects);
+                    else if (layer.Name == "opaque")
+                        opaque.AddRange(((ObjectLayer)layer).Objects);
                 }
             }
             if (map_info == null)
@@ -151,6 +172,10 @@ namespace TinyEngine.TinyRPG
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             Color defaultColor = Color.FromArgb((int)(darkness * 255f), 0, 0, 0);
             g.FillRectangle(new SolidBrush(defaultColor), 0f, 0f, lightMap.Width, lightMap.Height);
+            foreach (MapObject col in opaque)
+            {
+                g.ExcludeClip(new Rectangle((int)col.X, (int)col.Y, (int)col.Width, (int)col.Height));
+            }
             foreach (MapObject light in lights)
             {
                 float radius = 20f;

@@ -10,21 +10,6 @@ using TinyEngine.TinyRPG;
 
 namespace TinyEngine
 {
-    public class EntityStatsEditor : UITypeEditor
-    {
-        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
-        {
-            return UITypeEditorEditStyle.Modal;
-        }
-
-        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
-        {
-            EditEntityStatsForm form = new EditEntityStatsForm((EntityStats)value);
-            form.ShowDialog();
-            return form.Stats;
-        }
-    }
-
     public partial class EditEntityStatsForm : Form
     {
         public EntityStats Stats { get; set; }
@@ -51,6 +36,21 @@ namespace TinyEngine
         private void btnSave_Click(object sender, EventArgs e)
         {
             Close();
+        }
+    }
+
+    public class EntityStatsEditor : UITypeEditor
+    {
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+        {
+            return UITypeEditorEditStyle.Modal;
+        }
+
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            EditEntityStatsForm form = new EditEntityStatsForm((EntityStats)value);
+            form.ShowDialog();
+            return form.Stats;
         }
     }
 }

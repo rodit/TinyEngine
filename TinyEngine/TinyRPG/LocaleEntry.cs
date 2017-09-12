@@ -8,16 +8,29 @@ namespace TinyEngine.TinyRPG
 {
     public class LocaleEntry
     {
+        public static LocaleEntry BLANK_LINE = new LocaleEntry("null", "null", "null");
+
+        public class CommentEntry : LocaleEntry
+        {
+            public CommentEntry(string comment) : base("null", "null", comment)
+            {
+                
+            }
+        }
+
+        public string Group { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
 
-        public LocaleEntry(string name)
+        public LocaleEntry(string group, string name)
         {
+            Group = group;
             Name = name;
         }
 
-        public LocaleEntry(string name, string value)
+        public LocaleEntry(string group, string name, string value)
         {
+            Group = group;
             Name = name;
             Value = value;
         }
@@ -27,16 +40,17 @@ namespace TinyEngine.TinyRPG
             return Value;
         }
 
-        public static LocaleEntry Get(string name)
+        public static LocaleEntry Get(string group, string name)
         {
             if (Project.CurrentLocaleFile == null)
                 return new LocaleEntry("null", "No Locale is Loaded.");
-            return Project.CurrentLocaleFile.GetEntryOrCreate(name);
+            return Project.CurrentLocaleFile.GetEntryOrCreate(group, name);
         }
     }
 
     public class LocaleEntryRef
     {
+        public string Group { get; set; }
         public string Name { get; set; }
         public string Value
         {
@@ -44,18 +58,19 @@ namespace TinyEngine.TinyRPG
             {
                 if (Project.CurrentLocaleFile == null)
                     return "No Locale is Loaded.";
-                return Project.CurrentLocaleFile.GetEntryValue(Name);
+                return Project.CurrentLocaleFile.GetEntryValue(Group, Name);
             }
             set
             {
                 if (Project.CurrentLocaleFile == null)
                     return;
-                Project.CurrentLocaleFile.GetEntry(Name).Value = value;
+                Project.CurrentLocaleFile.GetEntry(Group, Name).Value = value;
             }
         }
 
-        public LocaleEntryRef(string name)
+        public LocaleEntryRef(string group, string name)
         {
+            Group = group;
             Name = name;
         }
 

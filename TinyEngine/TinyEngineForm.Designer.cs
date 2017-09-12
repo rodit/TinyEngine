@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TinyEngineForm));
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.btnLaunchConsole = new System.Windows.Forms.Button();
             this.lblConfigBin = new System.Windows.Forms.Label();
             this.txtConfigBin = new System.Windows.Forms.TextBox();
             this.lblMapDev = new System.Windows.Forms.Label();
@@ -56,6 +58,7 @@
             this.pbItemPreview = new TinyEngine.InterpolatedPictureBox();
             this.lbItems = new System.Windows.Forms.ListBox();
             this.tabMaps = new System.Windows.Forms.TabPage();
+            this.btnCompileAllMaps = new System.Windows.Forms.Button();
             this.chkShowMapEntities = new System.Windows.Forms.CheckBox();
             this.chkShowMapCollisions = new System.Windows.Forms.CheckBox();
             this.chkShowMapLights = new System.Windows.Forms.CheckBox();
@@ -68,10 +71,23 @@
             this.btnNewMap = new System.Windows.Forms.Button();
             this.txtFilterMapsLB = new System.Windows.Forms.TextBox();
             this.lbMaps = new System.Windows.Forms.ListBox();
+            this.tabEntities = new System.Windows.Forms.TabPage();
+            this.btnDeleteEntity = new System.Windows.Forms.Button();
+            this.btnSaveEntity = new System.Windows.Forms.Button();
+            this.cbEntityPropType = new System.Windows.Forms.ComboBox();
+            this.txtEntityPropName = new System.Windows.Forms.TextBox();
+            this.btnAddEntProp = new System.Windows.Forms.Button();
+            this.propsEnt = new System.Windows.Forms.PropertyGrid();
+            this.lbEntities = new System.Windows.Forms.ListBox();
+            this.txtEntityPropValue = new System.Windows.Forms.TextBox();
+            this.cbEntityPropValue = new System.Windows.Forms.ComboBox();
+            this.tabShops = new System.Windows.Forms.TabPage();
+            this.lbShops = new System.Windows.Forms.ListBox();
             this.tabScripts = new System.Windows.Forms.TabPage();
             this.tabsScriptEditors = new System.Windows.Forms.TabControl();
             this.treeViewScriptFiles = new System.Windows.Forms.TreeView();
             this.tabLocales = new System.Windows.Forms.TabPage();
+            this.lbLocaleGroups = new System.Windows.Forms.ListBox();
             this.lblLocaleFilter = new System.Windows.Forms.Label();
             this.txtLocaleFilter = new System.Windows.Forms.TextBox();
             this.dataLocale = new System.Windows.Forms.DataGridView();
@@ -79,22 +95,46 @@
             this.lblLocaleName = new System.Windows.Forms.Label();
             this.txtLocaleName = new System.Windows.Forms.TextBox();
             this.lbLocales = new System.Windows.Forms.ListBox();
+            this.tabDialogs = new System.Windows.Forms.TabPage();
+            this.btnDeleteDialog = new System.Windows.Forms.Button();
+            this.btnAddDialogLine = new System.Windows.Forms.Button();
+            this.btnDeleteDialogLine = new System.Windows.Forms.Button();
+            this.btnDialogLineDown = new System.Windows.Forms.Button();
+            this.btnDialogLineUp = new System.Windows.Forms.Button();
+            this.btnSaveDialog = new System.Windows.Forms.Button();
+            this.txtLineArg = new System.Windows.Forms.TextBox();
+            this.txtLineValue = new System.Windows.Forms.TextBox();
+            this.cbDialogLineType = new System.Windows.Forms.ComboBox();
+            this.lbDialogPartLines = new System.Windows.Forms.ListBox();
+            this.btnAddDialogPart = new System.Windows.Forms.Button();
+            this.btnDeleteDialogPart = new System.Windows.Forms.Button();
+            this.btnDialogPartDown = new System.Windows.Forms.Button();
+            this.btnDialogPartUp = new System.Windows.Forms.Button();
+            this.gridGlobalReqs = new System.Windows.Forms.DataGridView();
+            this.lbDialogParts = new System.Windows.Forms.ListBox();
+            this.btnNewDialog = new System.Windows.Forms.Button();
+            this.txtFilterDialogs = new System.Windows.Forms.TextBox();
+            this.lbDialogs = new System.Windows.Forms.ListBox();
+            this.tabGuis = new System.Windows.Forms.TabPage();
             this.tabDebugger = new System.Windows.Forms.TabPage();
             this.txtDebugInput = new System.Windows.Forms.TextBox();
             this.txtDebugConsole = new System.Windows.Forms.TextBox();
             this.tabLogs = new System.Windows.Forms.TabPage();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.lbLogs = new System.Windows.Forms.ListBox();
-            this.btnLaunchConsole = new System.Windows.Forms.Button();
             this.tabs.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabItems.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbItemPreview)).BeginInit();
             this.tabMaps.SuspendLayout();
             this.panelMapPreview.SuspendLayout();
+            this.tabEntities.SuspendLayout();
+            this.tabShops.SuspendLayout();
             this.tabScripts.SuspendLayout();
             this.tabLocales.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataLocale)).BeginInit();
+            this.tabDialogs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridGlobalReqs)).BeginInit();
             this.tabDebugger.SuspendLayout();
             this.tabLogs.SuspendLayout();
             this.SuspendLayout();
@@ -104,8 +144,12 @@
             this.tabs.Controls.Add(this.tabMain);
             this.tabs.Controls.Add(this.tabItems);
             this.tabs.Controls.Add(this.tabMaps);
+            this.tabs.Controls.Add(this.tabEntities);
+            this.tabs.Controls.Add(this.tabShops);
             this.tabs.Controls.Add(this.tabScripts);
             this.tabs.Controls.Add(this.tabLocales);
+            this.tabs.Controls.Add(this.tabDialogs);
+            this.tabs.Controls.Add(this.tabGuis);
             this.tabs.Controls.Add(this.tabDebugger);
             this.tabs.Controls.Add(this.tabLogs);
             this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -137,6 +181,16 @@
             this.tabMain.TabIndex = 3;
             this.tabMain.Text = "Project";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // btnLaunchConsole
+            // 
+            this.btnLaunchConsole.Location = new System.Drawing.Point(9, 179);
+            this.btnLaunchConsole.Name = "btnLaunchConsole";
+            this.btnLaunchConsole.Size = new System.Drawing.Size(367, 23);
+            this.btnLaunchConsole.TabIndex = 12;
+            this.btnLaunchConsole.Text = "Console";
+            this.btnLaunchConsole.UseVisualStyleBackColor = true;
+            this.btnLaunchConsole.Click += new System.EventHandler(this.btnLaunchConsole_Click);
             // 
             // lblConfigBin
             // 
@@ -392,6 +446,7 @@
             // 
             // tabMaps
             // 
+            this.tabMaps.Controls.Add(this.btnCompileAllMaps);
             this.tabMaps.Controls.Add(this.chkShowMapEntities);
             this.tabMaps.Controls.Add(this.chkShowMapCollisions);
             this.tabMaps.Controls.Add(this.chkShowMapLights);
@@ -409,6 +464,17 @@
             this.tabMaps.TabIndex = 2;
             this.tabMaps.Text = "Maps";
             this.tabMaps.UseVisualStyleBackColor = true;
+            // 
+            // btnCompileAllMaps
+            // 
+            this.btnCompileAllMaps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCompileAllMaps.Location = new System.Drawing.Point(792, 526);
+            this.btnCompileAllMaps.Name = "btnCompileAllMaps";
+            this.btnCompileAllMaps.Size = new System.Drawing.Size(80, 23);
+            this.btnCompileAllMaps.TabIndex = 12;
+            this.btnCompileAllMaps.Text = "Compile All";
+            this.btnCompileAllMaps.UseVisualStyleBackColor = true;
+            this.btnCompileAllMaps.Click += new System.EventHandler(this.btnCompileAllMaps_Click);
             // 
             // chkShowMapEntities
             // 
@@ -503,7 +569,7 @@
             this.btnDeleteMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDeleteMap.Location = new System.Drawing.Point(792, 500);
             this.btnDeleteMap.Name = "btnDeleteMap";
-            this.btnDeleteMap.Size = new System.Drawing.Size(80, 49);
+            this.btnDeleteMap.Size = new System.Drawing.Size(80, 23);
             this.btnDeleteMap.TabIndex = 6;
             this.btnDeleteMap.Text = "Delete";
             this.btnDeleteMap.UseVisualStyleBackColor = true;
@@ -550,6 +616,143 @@
             this.lbMaps.TabIndex = 0;
             this.lbMaps.SelectedIndexChanged += new System.EventHandler(this.lbMaps_SelectedIndexChanged);
             // 
+            // tabEntities
+            // 
+            this.tabEntities.Controls.Add(this.btnDeleteEntity);
+            this.tabEntities.Controls.Add(this.btnSaveEntity);
+            this.tabEntities.Controls.Add(this.cbEntityPropType);
+            this.tabEntities.Controls.Add(this.txtEntityPropName);
+            this.tabEntities.Controls.Add(this.btnAddEntProp);
+            this.tabEntities.Controls.Add(this.propsEnt);
+            this.tabEntities.Controls.Add(this.lbEntities);
+            this.tabEntities.Controls.Add(this.txtEntityPropValue);
+            this.tabEntities.Controls.Add(this.cbEntityPropValue);
+            this.tabEntities.Location = new System.Drawing.Point(4, 22);
+            this.tabEntities.Name = "tabEntities";
+            this.tabEntities.Size = new System.Drawing.Size(880, 557);
+            this.tabEntities.TabIndex = 9;
+            this.tabEntities.Text = "Entities";
+            this.tabEntities.UseVisualStyleBackColor = true;
+            // 
+            // btnDeleteEntity
+            // 
+            this.btnDeleteEntity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDeleteEntity.Location = new System.Drawing.Point(754, 527);
+            this.btnDeleteEntity.Name = "btnDeleteEntity";
+            this.btnDeleteEntity.Size = new System.Drawing.Size(118, 23);
+            this.btnDeleteEntity.TabIndex = 59;
+            this.btnDeleteEntity.Text = "Delete";
+            this.btnDeleteEntity.UseVisualStyleBackColor = true;
+            // 
+            // btnSaveEntity
+            // 
+            this.btnSaveEntity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveEntity.Location = new System.Drawing.Point(270, 526);
+            this.btnSaveEntity.Name = "btnSaveEntity";
+            this.btnSaveEntity.Size = new System.Drawing.Size(478, 23);
+            this.btnSaveEntity.TabIndex = 58;
+            this.btnSaveEntity.Text = "Save";
+            this.btnSaveEntity.UseVisualStyleBackColor = true;
+            this.btnSaveEntity.Click += new System.EventHandler(this.btnSaveEntity_Click);
+            // 
+            // cbEntityPropType
+            // 
+            this.cbEntityPropType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbEntityPropType.DisplayMember = "0";
+            this.cbEntityPropType.FormattingEnabled = true;
+            this.cbEntityPropType.Items.AddRange(new object[] {
+            "Generic",
+            "Attack",
+            "EquipData",
+            "Inventory",
+            "ShopRef",
+            "Stats"});
+            this.cbEntityPropType.Location = new System.Drawing.Point(270, 499);
+            this.cbEntityPropType.Name = "cbEntityPropType";
+            this.cbEntityPropType.Size = new System.Drawing.Size(121, 21);
+            this.cbEntityPropType.TabIndex = 54;
+            this.cbEntityPropType.Text = "Generic";
+            this.cbEntityPropType.SelectedIndexChanged += new System.EventHandler(this.cbEntityPropType_SelectedIndexChanged);
+            // 
+            // txtEntityPropName
+            // 
+            this.txtEntityPropName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtEntityPropName.Location = new System.Drawing.Point(397, 500);
+            this.txtEntityPropName.Name = "txtEntityPropName";
+            this.txtEntityPropName.Size = new System.Drawing.Size(171, 20);
+            this.txtEntityPropName.TabIndex = 55;
+            // 
+            // btnAddEntProp
+            // 
+            this.btnAddEntProp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAddEntProp.Location = new System.Drawing.Point(754, 498);
+            this.btnAddEntProp.Name = "btnAddEntProp";
+            this.btnAddEntProp.Size = new System.Drawing.Size(118, 23);
+            this.btnAddEntProp.TabIndex = 57;
+            this.btnAddEntProp.Text = "Add Property";
+            this.btnAddEntProp.UseVisualStyleBackColor = true;
+            this.btnAddEntProp.Click += new System.EventHandler(this.btnAddEntProp_Click);
+            // 
+            // propsEnt
+            // 
+            this.propsEnt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.propsEnt.HelpVisible = false;
+            this.propsEnt.Location = new System.Drawing.Point(270, 127);
+            this.propsEnt.Name = "propsEnt";
+            this.propsEnt.Size = new System.Drawing.Size(602, 365);
+            this.propsEnt.TabIndex = 1;
+            // 
+            // lbEntities
+            // 
+            this.lbEntities.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lbEntities.FormattingEnabled = true;
+            this.lbEntities.Location = new System.Drawing.Point(3, 3);
+            this.lbEntities.Name = "lbEntities";
+            this.lbEntities.Size = new System.Drawing.Size(261, 498);
+            this.lbEntities.TabIndex = 0;
+            this.lbEntities.SelectedIndexChanged += new System.EventHandler(this.lbEntities_SelectedIndexChanged);
+            // 
+            // txtEntityPropValue
+            // 
+            this.txtEntityPropValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtEntityPropValue.Location = new System.Drawing.Point(574, 500);
+            this.txtEntityPropValue.Name = "txtEntityPropValue";
+            this.txtEntityPropValue.Size = new System.Drawing.Size(174, 20);
+            this.txtEntityPropValue.TabIndex = 56;
+            // 
+            // cbEntityPropValue
+            // 
+            this.cbEntityPropValue.FormattingEnabled = true;
+            this.cbEntityPropValue.Location = new System.Drawing.Point(574, 500);
+            this.cbEntityPropValue.Name = "cbEntityPropValue";
+            this.cbEntityPropValue.Size = new System.Drawing.Size(174, 21);
+            this.cbEntityPropValue.TabIndex = 56;
+            this.cbEntityPropValue.Visible = false;
+            // 
+            // tabShops
+            // 
+            this.tabShops.Controls.Add(this.lbShops);
+            this.tabShops.Location = new System.Drawing.Point(4, 22);
+            this.tabShops.Name = "tabShops";
+            this.tabShops.Size = new System.Drawing.Size(880, 557);
+            this.tabShops.TabIndex = 10;
+            this.tabShops.Text = "Shops";
+            this.tabShops.UseVisualStyleBackColor = true;
+            // 
+            // lbShops
+            // 
+            this.lbShops.FormattingEnabled = true;
+            this.lbShops.Location = new System.Drawing.Point(3, 3);
+            this.lbShops.Name = "lbShops";
+            this.lbShops.Size = new System.Drawing.Size(249, 511);
+            this.lbShops.TabIndex = 0;
+            this.lbShops.SelectedIndexChanged += new System.EventHandler(this.lbShops_SelectedIndexChanged);
+            // 
             // tabScripts
             // 
             this.tabScripts.Controls.Add(this.tabsScriptEditors);
@@ -583,6 +786,7 @@
             // 
             // tabLocales
             // 
+            this.tabLocales.Controls.Add(this.lbLocaleGroups);
             this.tabLocales.Controls.Add(this.lblLocaleFilter);
             this.tabLocales.Controls.Add(this.txtLocaleFilter);
             this.tabLocales.Controls.Add(this.dataLocale);
@@ -597,10 +801,21 @@
             this.tabLocales.Text = "Locales";
             this.tabLocales.UseVisualStyleBackColor = true;
             // 
+            // lbLocaleGroups
+            // 
+            this.lbLocaleGroups.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lbLocaleGroups.FormattingEnabled = true;
+            this.lbLocaleGroups.Location = new System.Drawing.Point(160, 3);
+            this.lbLocaleGroups.Name = "lbLocaleGroups";
+            this.lbLocaleGroups.Size = new System.Drawing.Size(145, 511);
+            this.lbLocaleGroups.TabIndex = 8;
+            this.lbLocaleGroups.SelectedIndexChanged += new System.EventHandler(this.lbLocaleGroups_SelectedIndexChanged);
+            // 
             // lblLocaleFilter
             // 
             this.lblLocaleFilter.AutoSize = true;
-            this.lblLocaleFilter.Location = new System.Drawing.Point(160, 32);
+            this.lblLocaleFilter.Location = new System.Drawing.Point(308, 32);
             this.lblLocaleFilter.Name = "lblLocaleFilter";
             this.lblLocaleFilter.Size = new System.Drawing.Size(32, 13);
             this.lblLocaleFilter.TabIndex = 7;
@@ -608,9 +823,9 @@
             // 
             // txtLocaleFilter
             // 
-            this.txtLocaleFilter.Location = new System.Drawing.Point(209, 29);
+            this.txtLocaleFilter.Location = new System.Drawing.Point(352, 29);
             this.txtLocaleFilter.Name = "txtLocaleFilter";
-            this.txtLocaleFilter.Size = new System.Drawing.Size(668, 20);
+            this.txtLocaleFilter.Size = new System.Drawing.Size(525, 20);
             this.txtLocaleFilter.TabIndex = 6;
             // 
             // dataLocale
@@ -619,9 +834,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataLocale.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataLocale.Location = new System.Drawing.Point(160, 55);
+            this.dataLocale.Location = new System.Drawing.Point(311, 55);
             this.dataLocale.Name = "dataLocale";
-            this.dataLocale.Size = new System.Drawing.Size(712, 465);
+            this.dataLocale.Size = new System.Drawing.Size(561, 465);
             this.dataLocale.TabIndex = 5;
             // 
             // btnSaveLocale
@@ -639,7 +854,7 @@
             // lblLocaleName
             // 
             this.lblLocaleName.AutoSize = true;
-            this.lblLocaleName.Location = new System.Drawing.Point(160, 6);
+            this.lblLocaleName.Location = new System.Drawing.Point(308, 6);
             this.lblLocaleName.Name = "lblLocaleName";
             this.lblLocaleName.Size = new System.Drawing.Size(38, 13);
             this.lblLocaleName.TabIndex = 3;
@@ -647,9 +862,9 @@
             // 
             // txtLocaleName
             // 
-            this.txtLocaleName.Location = new System.Drawing.Point(209, 3);
+            this.txtLocaleName.Location = new System.Drawing.Point(352, 3);
             this.txtLocaleName.Name = "txtLocaleName";
-            this.txtLocaleName.Size = new System.Drawing.Size(668, 20);
+            this.txtLocaleName.Size = new System.Drawing.Size(525, 20);
             this.txtLocaleName.TabIndex = 2;
             // 
             // lbLocales
@@ -661,6 +876,244 @@
             this.lbLocales.Name = "lbLocales";
             this.lbLocales.Size = new System.Drawing.Size(151, 550);
             this.lbLocales.TabIndex = 0;
+            // 
+            // tabDialogs
+            // 
+            this.tabDialogs.Controls.Add(this.btnDeleteDialog);
+            this.tabDialogs.Controls.Add(this.btnAddDialogLine);
+            this.tabDialogs.Controls.Add(this.btnDeleteDialogLine);
+            this.tabDialogs.Controls.Add(this.btnDialogLineDown);
+            this.tabDialogs.Controls.Add(this.btnDialogLineUp);
+            this.tabDialogs.Controls.Add(this.btnSaveDialog);
+            this.tabDialogs.Controls.Add(this.txtLineArg);
+            this.tabDialogs.Controls.Add(this.txtLineValue);
+            this.tabDialogs.Controls.Add(this.cbDialogLineType);
+            this.tabDialogs.Controls.Add(this.lbDialogPartLines);
+            this.tabDialogs.Controls.Add(this.btnAddDialogPart);
+            this.tabDialogs.Controls.Add(this.btnDeleteDialogPart);
+            this.tabDialogs.Controls.Add(this.btnDialogPartDown);
+            this.tabDialogs.Controls.Add(this.btnDialogPartUp);
+            this.tabDialogs.Controls.Add(this.gridGlobalReqs);
+            this.tabDialogs.Controls.Add(this.lbDialogParts);
+            this.tabDialogs.Controls.Add(this.btnNewDialog);
+            this.tabDialogs.Controls.Add(this.txtFilterDialogs);
+            this.tabDialogs.Controls.Add(this.lbDialogs);
+            this.tabDialogs.Location = new System.Drawing.Point(4, 22);
+            this.tabDialogs.Name = "tabDialogs";
+            this.tabDialogs.Size = new System.Drawing.Size(880, 557);
+            this.tabDialogs.TabIndex = 8;
+            this.tabDialogs.Text = "Dialogs";
+            this.tabDialogs.UseVisualStyleBackColor = true;
+            // 
+            // btnDeleteDialog
+            // 
+            this.btnDeleteDialog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDeleteDialog.Location = new System.Drawing.Point(252, 532);
+            this.btnDeleteDialog.Name = "btnDeleteDialog";
+            this.btnDeleteDialog.Size = new System.Drawing.Size(133, 23);
+            this.btnDeleteDialog.TabIndex = 73;
+            this.btnDeleteDialog.Text = "Delete";
+            this.btnDeleteDialog.UseVisualStyleBackColor = true;
+            this.btnDeleteDialog.Click += new System.EventHandler(this.btnDeleteDialog_Click);
+            // 
+            // btnAddDialogLine
+            // 
+            this.btnAddDialogLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAddDialogLine.Location = new System.Drawing.Point(837, 197);
+            this.btnAddDialogLine.Name = "btnAddDialogLine";
+            this.btnAddDialogLine.Size = new System.Drawing.Size(35, 23);
+            this.btnAddDialogLine.TabIndex = 71;
+            this.btnAddDialogLine.Text = "+";
+            this.btnAddDialogLine.UseVisualStyleBackColor = true;
+            this.btnAddDialogLine.Click += new System.EventHandler(this.btnAddDialogLine_Click);
+            // 
+            // btnDeleteDialogLine
+            // 
+            this.btnDeleteDialogLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDeleteDialogLine.Location = new System.Drawing.Point(837, 284);
+            this.btnDeleteDialogLine.Name = "btnDeleteDialogLine";
+            this.btnDeleteDialogLine.Size = new System.Drawing.Size(35, 23);
+            this.btnDeleteDialogLine.TabIndex = 72;
+            this.btnDeleteDialogLine.Text = "✖";
+            this.btnDeleteDialogLine.UseVisualStyleBackColor = true;
+            this.btnDeleteDialogLine.Click += new System.EventHandler(this.btnDeleteDialogLine_Click);
+            // 
+            // btnDialogLineDown
+            // 
+            this.btnDialogLineDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDialogLineDown.Location = new System.Drawing.Point(837, 255);
+            this.btnDialogLineDown.Name = "btnDialogLineDown";
+            this.btnDialogLineDown.Size = new System.Drawing.Size(35, 23);
+            this.btnDialogLineDown.TabIndex = 70;
+            this.btnDialogLineDown.Text = " ▼";
+            this.btnDialogLineDown.UseVisualStyleBackColor = true;
+            this.btnDialogLineDown.Click += new System.EventHandler(this.btnDialogLineDown_Click);
+            // 
+            // btnDialogLineUp
+            // 
+            this.btnDialogLineUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDialogLineUp.Location = new System.Drawing.Point(837, 226);
+            this.btnDialogLineUp.Name = "btnDialogLineUp";
+            this.btnDialogLineUp.Size = new System.Drawing.Size(35, 23);
+            this.btnDialogLineUp.TabIndex = 69;
+            this.btnDialogLineUp.Text = " ▲";
+            this.btnDialogLineUp.UseVisualStyleBackColor = true;
+            this.btnDialogLineUp.Click += new System.EventHandler(this.btnDialogLineUp_Click);
+            // 
+            // btnSaveDialog
+            // 
+            this.btnSaveDialog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveDialog.Location = new System.Drawing.Point(391, 532);
+            this.btnSaveDialog.Name = "btnSaveDialog";
+            this.btnSaveDialog.Size = new System.Drawing.Size(481, 23);
+            this.btnSaveDialog.TabIndex = 68;
+            this.btnSaveDialog.Text = "Save";
+            this.btnSaveDialog.UseVisualStyleBackColor = true;
+            this.btnSaveDialog.Click += new System.EventHandler(this.btnSaveDialog_Click);
+            // 
+            // txtLineArg
+            // 
+            this.txtLineArg.Location = new System.Drawing.Point(252, 375);
+            this.txtLineArg.Name = "txtLineArg";
+            this.txtLineArg.Size = new System.Drawing.Size(620, 20);
+            this.txtLineArg.TabIndex = 67;
+            // 
+            // txtLineValue
+            // 
+            this.txtLineValue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLineValue.Location = new System.Drawing.Point(252, 401);
+            this.txtLineValue.Multiline = true;
+            this.txtLineValue.Name = "txtLineValue";
+            this.txtLineValue.Size = new System.Drawing.Size(620, 127);
+            this.txtLineValue.TabIndex = 66;
+            // 
+            // cbDialogLineType
+            // 
+            this.cbDialogLineType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbDialogLineType.FormattingEnabled = true;
+            this.cbDialogLineType.Location = new System.Drawing.Point(252, 348);
+            this.cbDialogLineType.Name = "cbDialogLineType";
+            this.cbDialogLineType.Size = new System.Drawing.Size(620, 21);
+            this.cbDialogLineType.TabIndex = 65;
+            this.cbDialogLineType.SelectedIndexChanged += new System.EventHandler(this.cbDialogLineType_SelectedIndexChanged);
+            // 
+            // lbDialogPartLines
+            // 
+            this.lbDialogPartLines.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbDialogPartLines.FormattingEnabled = true;
+            this.lbDialogPartLines.Location = new System.Drawing.Point(252, 169);
+            this.lbDialogPartLines.Name = "lbDialogPartLines";
+            this.lbDialogPartLines.Size = new System.Drawing.Size(579, 173);
+            this.lbDialogPartLines.TabIndex = 64;
+            this.lbDialogPartLines.SelectedIndexChanged += new System.EventHandler(this.lbDialogPartLines_SelectedIndexChanged);
+            // 
+            // btnAddDialogPart
+            // 
+            this.btnAddDialogPart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAddDialogPart.Location = new System.Drawing.Point(523, 25);
+            this.btnAddDialogPart.Name = "btnAddDialogPart";
+            this.btnAddDialogPart.Size = new System.Drawing.Size(35, 23);
+            this.btnAddDialogPart.TabIndex = 63;
+            this.btnAddDialogPart.Text = "+";
+            this.btnAddDialogPart.UseVisualStyleBackColor = true;
+            this.btnAddDialogPart.Click += new System.EventHandler(this.btnAddDialogPart_Click);
+            // 
+            // btnDeleteDialogPart
+            // 
+            this.btnDeleteDialogPart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDeleteDialogPart.Location = new System.Drawing.Point(523, 112);
+            this.btnDeleteDialogPart.Name = "btnDeleteDialogPart";
+            this.btnDeleteDialogPart.Size = new System.Drawing.Size(35, 23);
+            this.btnDeleteDialogPart.TabIndex = 63;
+            this.btnDeleteDialogPart.Text = "✖";
+            this.btnDeleteDialogPart.UseVisualStyleBackColor = true;
+            this.btnDeleteDialogPart.Click += new System.EventHandler(this.btnDeleteDialogPart_Click);
+            // 
+            // btnDialogPartDown
+            // 
+            this.btnDialogPartDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDialogPartDown.Location = new System.Drawing.Point(523, 83);
+            this.btnDialogPartDown.Name = "btnDialogPartDown";
+            this.btnDialogPartDown.Size = new System.Drawing.Size(35, 23);
+            this.btnDialogPartDown.TabIndex = 62;
+            this.btnDialogPartDown.Text = " ▼";
+            this.btnDialogPartDown.UseVisualStyleBackColor = true;
+            this.btnDialogPartDown.Click += new System.EventHandler(this.btnDialogPartDown_Click);
+            // 
+            // btnDialogPartUp
+            // 
+            this.btnDialogPartUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDialogPartUp.Location = new System.Drawing.Point(523, 54);
+            this.btnDialogPartUp.Name = "btnDialogPartUp";
+            this.btnDialogPartUp.Size = new System.Drawing.Size(35, 23);
+            this.btnDialogPartUp.TabIndex = 61;
+            this.btnDialogPartUp.Text = " ▲";
+            this.btnDialogPartUp.UseVisualStyleBackColor = true;
+            this.btnDialogPartUp.Click += new System.EventHandler(this.btnDialogPartUp_Click);
+            // 
+            // gridGlobalReqs
+            // 
+            this.gridGlobalReqs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridGlobalReqs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridGlobalReqs.Location = new System.Drawing.Point(564, 3);
+            this.gridGlobalReqs.Name = "gridGlobalReqs";
+            this.gridGlobalReqs.Size = new System.Drawing.Size(308, 160);
+            this.gridGlobalReqs.TabIndex = 60;
+            // 
+            // lbDialogParts
+            // 
+            this.lbDialogParts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbDialogParts.FormattingEnabled = true;
+            this.lbDialogParts.Location = new System.Drawing.Point(252, 3);
+            this.lbDialogParts.Name = "lbDialogParts";
+            this.lbDialogParts.Size = new System.Drawing.Size(265, 160);
+            this.lbDialogParts.TabIndex = 59;
+            this.lbDialogParts.SelectedIndexChanged += new System.EventHandler(this.lbDialogParts_SelectedIndexChanged);
+            // 
+            // btnNewDialog
+            // 
+            this.btnNewDialog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnNewDialog.Location = new System.Drawing.Point(8, 505);
+            this.btnNewDialog.Name = "btnNewDialog";
+            this.btnNewDialog.Size = new System.Drawing.Size(238, 23);
+            this.btnNewDialog.TabIndex = 58;
+            this.btnNewDialog.Text = "New";
+            this.btnNewDialog.UseVisualStyleBackColor = true;
+            this.btnNewDialog.Click += new System.EventHandler(this.btnNewDialog_Click);
+            // 
+            // txtFilterDialogs
+            // 
+            this.txtFilterDialogs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtFilterDialogs.Location = new System.Drawing.Point(8, 534);
+            this.txtFilterDialogs.Name = "txtFilterDialogs";
+            this.txtFilterDialogs.Size = new System.Drawing.Size(238, 20);
+            this.txtFilterDialogs.TabIndex = 57;
+            // 
+            // lbDialogs
+            // 
+            this.lbDialogs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lbDialogs.FormattingEnabled = true;
+            this.lbDialogs.Location = new System.Drawing.Point(8, 3);
+            this.lbDialogs.Name = "lbDialogs";
+            this.lbDialogs.Size = new System.Drawing.Size(238, 498);
+            this.lbDialogs.TabIndex = 0;
+            this.lbDialogs.SelectedIndexChanged += new System.EventHandler(this.lbDialogs_SelectedIndexChanged);
+            // 
+            // tabGuis
+            // 
+            this.tabGuis.Location = new System.Drawing.Point(4, 22);
+            this.tabGuis.Name = "tabGuis";
+            this.tabGuis.Size = new System.Drawing.Size(880, 557);
+            this.tabGuis.TabIndex = 11;
+            this.tabGuis.Text = "GUI Designer";
+            this.tabGuis.UseVisualStyleBackColor = true;
             // 
             // tabDebugger
             // 
@@ -743,22 +1196,13 @@
             this.lbLogs.Size = new System.Drawing.Size(880, 559);
             this.lbLogs.TabIndex = 0;
             // 
-            // btnLaunchConsole
-            // 
-            this.btnLaunchConsole.Location = new System.Drawing.Point(9, 179);
-            this.btnLaunchConsole.Name = "btnLaunchConsole";
-            this.btnLaunchConsole.Size = new System.Drawing.Size(367, 23);
-            this.btnLaunchConsole.TabIndex = 12;
-            this.btnLaunchConsole.Text = "Console";
-            this.btnLaunchConsole.UseVisualStyleBackColor = true;
-            this.btnLaunchConsole.Click += new System.EventHandler(this.btnLaunchConsole_Click);
-            // 
             // TinyEngineForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(888, 583);
             this.Controls.Add(this.tabs);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "TinyEngineForm";
             this.Text = "TinyEngine";
@@ -772,10 +1216,16 @@
             this.tabMaps.ResumeLayout(false);
             this.tabMaps.PerformLayout();
             this.panelMapPreview.ResumeLayout(false);
+            this.tabEntities.ResumeLayout(false);
+            this.tabEntities.PerformLayout();
+            this.tabShops.ResumeLayout(false);
             this.tabScripts.ResumeLayout(false);
             this.tabLocales.ResumeLayout(false);
             this.tabLocales.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataLocale)).EndInit();
+            this.tabDialogs.ResumeLayout(false);
+            this.tabDialogs.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridGlobalReqs)).EndInit();
             this.tabDebugger.ResumeLayout(false);
             this.tabDebugger.PerformLayout();
             this.tabLogs.ResumeLayout(false);
@@ -843,6 +1293,41 @@
         private System.Windows.Forms.ComboBox cbItemPropType;
         private System.Windows.Forms.Button btnNewItem;
         private System.Windows.Forms.Button btnLaunchConsole;
+        private System.Windows.Forms.TabPage tabDialogs;
+        private System.Windows.Forms.ListBox lbDialogs;
+        private System.Windows.Forms.Button btnNewDialog;
+        private System.Windows.Forms.TextBox txtFilterDialogs;
+        private System.Windows.Forms.ListBox lbDialogParts;
+        private System.Windows.Forms.DataGridView gridGlobalReqs;
+        private System.Windows.Forms.Button btnDialogPartUp;
+        private System.Windows.Forms.Button btnDialogPartDown;
+        private System.Windows.Forms.Button btnDeleteDialogPart;
+        private System.Windows.Forms.Button btnAddDialogPart;
+        private System.Windows.Forms.ListBox lbDialogPartLines;
+        private System.Windows.Forms.ComboBox cbDialogLineType;
+        private System.Windows.Forms.TextBox txtLineValue;
+        private System.Windows.Forms.TextBox txtLineArg;
+        private System.Windows.Forms.Button btnSaveDialog;
+        private System.Windows.Forms.Button btnAddDialogLine;
+        private System.Windows.Forms.Button btnDeleteDialogLine;
+        private System.Windows.Forms.Button btnDialogLineDown;
+        private System.Windows.Forms.Button btnDialogLineUp;
+        private System.Windows.Forms.Button btnDeleteDialog;
+        private System.Windows.Forms.TabPage tabEntities;
+        private System.Windows.Forms.ListBox lbEntities;
+        private System.Windows.Forms.PropertyGrid propsEnt;
+        private System.Windows.Forms.ComboBox cbEntityPropType;
+        private System.Windows.Forms.TextBox txtEntityPropName;
+        private System.Windows.Forms.TextBox txtEntityPropValue;
+        private System.Windows.Forms.Button btnAddEntProp;
+        private System.Windows.Forms.TabPage tabShops;
+        private System.Windows.Forms.ListBox lbShops;
+        private System.Windows.Forms.Button btnDeleteEntity;
+        private System.Windows.Forms.Button btnSaveEntity;
+        private System.Windows.Forms.ComboBox cbEntityPropValue;
+        private System.Windows.Forms.TabPage tabGuis;
+        private System.Windows.Forms.ListBox lbLocaleGroups;
+        private System.Windows.Forms.Button btnCompileAllMaps;
     }
 }
 

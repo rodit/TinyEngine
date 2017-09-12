@@ -22,6 +22,8 @@ namespace TinyEngine.TinyRPG
         public static Config Config;
         public static TinyDebug Debug;
         public static List<TinyItem> Items { get; set; } = new List<TinyItem>();
+        public static List<TinyShop> Shops { get; set; } = new List<TinyShop>();
+        public static List<SoundGroup> Sounds { get; set; } = new List<SoundGroup>();
         public static MapFile CurrentMapFile { get; set; }
         public static LocaleFile CurrentLocaleFile { get; set; }
 
@@ -103,9 +105,31 @@ namespace TinyEngine.TinyRPG
             return assets;
         }
 
+        public string[] GetAssetDirs(string type)
+        {
+            string dir = GetAsset(type);
+            string[] dirs = Directory.GetDirectories(dir);
+            for (int i = 0; i < dirs.Length; i++)
+            {
+                dirs[i] = dirs[i].Substring(dir.Length + 1);
+            }
+            return dirs;
+        }
+
         public static bool IsValid(string path)
         {
             return Directory.Exists(Path.Combine(path, "assets"));
+        }
+
+        public static Sound FindSoundInstance(string name)
+        {
+            foreach(SoundGroup group in Sounds)
+            {
+                Sound s = group.Sounds.Find(x => x.Name == name);
+                if (s != null)
+                    return s;
+            }
+            return null;
         }
     }
 }

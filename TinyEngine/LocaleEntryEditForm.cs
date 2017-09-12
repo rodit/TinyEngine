@@ -12,6 +12,30 @@ using TinyEngine.TinyRPG;
 
 namespace TinyEngine
 {
+    public partial class LocaleEntryEditForm : Form
+    {
+        public LocaleEntryRef Entry { get; set; }
+
+        public LocaleEntryEditForm(LocaleEntryRef entry)
+        {
+            Entry = entry;
+            InitializeComponent();
+        }
+
+        private void LocaleEntryEditForm_Load(object sender, EventArgs e)
+        {
+            MaximizeBox = false;
+            txtLocaleName.Text = Entry.Name;
+            txtLocaleValue.Text = Entry.Value.Replace("\\n", "\r\n");
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            Entry.Value = txtLocaleValue.Text.Replace("\r\n", "\\n");
+            Close();
+        }
+    }
+
     public class LocaleEntryEditor : UITypeEditor
     {
         public class LocaleEntryChangedEventArgs : EventArgs
@@ -42,30 +66,6 @@ namespace TinyEngine
             form.ShowDialog();
             LocaleEntryChanged?.Invoke(this, new LocaleEntryChangedEventArgs(form.Entry));
             return form.Entry;
-        }
-    }
-
-    public partial class LocaleEntryEditForm : Form
-    {
-        public LocaleEntryRef Entry { get; set; }
-
-        public LocaleEntryEditForm(LocaleEntryRef entry)
-        {
-            Entry = entry;
-            InitializeComponent();
-        }
-
-        private void LocaleEntryEditForm_Load(object sender, EventArgs e)
-        {
-            MaximizeBox = false;
-            txtLocaleName.Text = Entry.Name;
-            txtLocaleValue.Text = Entry.Value.Replace("\\n", "\r\n");
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            Entry.Value = txtLocaleValue.Text.Replace("\r\n", "\\n");
-            Close();
         }
     }
 }

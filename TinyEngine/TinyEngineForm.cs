@@ -29,7 +29,10 @@ namespace TinyEngine
         }
 
         private DataTable localeDataTable = new DataTable();
+        private DataTable dialogReqsTable = new DataTable();
         private bool localeLoaded = false;
+
+        private string currentGlobalReqName;
 
         private void TinyEngineForm_Load(object sender, EventArgs e)
         {
@@ -74,16 +77,15 @@ namespace TinyEngine
 
             ScriptEditorTab.Init();
 
-            Project.EngineLocale = new LocaleFile("en.lang");
+            Project.EngineLocale = new LocaleFile("en");
 
             KeyDown += TinyEngineForm_KeyDown;
             lbLocales.SelectedIndexChanged += LbLocales_SelectedIndexChanged;
             txtLocaleName.TextChanged += TxtLocaleName_TextChanged;
             txtLocaleFilter.TextChanged += TxtLocaleFilter_TextChanged;
-            localeDataTable.TableNewRow += LocaleDataTable_TableNewRow;
-            localeDataTable.RowDeleted += LocaleDataTable_RowDeleted;
             dataLocale.CellBeginEdit += DataLocale_CellBeginEdit;
             dataLocale.CellEndEdit += DataLocale_CellEndEdit;
+            dataLocale.UserDeletingRow += DataLocale_UserDeletingRow;
             localeDataTable.Columns.Add("LKey").DataType = typeof(string);
             localeDataTable.Columns.Add("LValue").DataType = typeof(string);
             localeDataTable.Columns.Add("Object").DataType = typeof(LocaleEntry);
@@ -104,6 +106,21 @@ namespace TinyEngine
             SendMessage(txtItemPropVal.Handle, EM_SETCUEBANNER, 0, "Value");
             cbItemPropType.DropDownStyle = ComboBoxStyle.DropDownList;
             LocaleEntryEditor.LocaleEntryChanged += LocaleEntryEditor_LocaleEntryChanged;
+            SendMessage(txtFilterDialogs.Handle, EM_SETCUEBANNER, 0, "Filter");
+            txtFilterDialogs.TextChanged += TxtFilterDialogs_TextChanged;
+            dialogReqsTable.Columns.Add("Global Name").DataType = typeof(string);
+            dialogReqsTable.Columns.Add("Global Value").DataType = typeof(string);
+            dialogReqsTable.Columns.Add("Object").DataType = typeof(DialogPart);
+            cbDialogLineType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbDialogLineType.DataSource = Enum.GetValues(typeof(DialogPart.LineType));
+            SendMessage(txtLineArg.Handle, EM_SETCUEBANNER, 0, "Argument");
+            SendMessage(txtLineValue.Handle, EM_SETCUEBANNER, 0, "Value");
+            gridGlobalReqs.CellBeginEdit += GridGlobalReqs_CellBeginEdit;
+            gridGlobalReqs.CellEndEdit += GridGlobalReqs_CellEndEdit;
+            gridGlobalReqs.UserDeletingRow += GridGlobalReqs_UserDeletingRow;
+            txtLineArg.KeyPress += TxtLineArg_KeyPress;
+            txtLineValue.KeyPress += TxtLineValue_KeyPress;
+            txtEntityPropValue.KeyUp += TxtEntityPropValue_KeyUp;
             RefreshAssets();
 
             txtDebugConsole.Enter += TxtDebugConsole_Enter;
@@ -112,10 +129,115 @@ namespace TinyEngine
             Project.Debug.DebugOutput += Debug_DebugOutput;
         }
 
+        private void TxtEntityPropValue_KeyUp(object sender, KeyEventArgs e)
+        {
+
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnAddEntProp.PerformClick();
+                txtEntityPropName.Clear();
+                txtEntityPropValue.Clear();
+                txtEntityPropName.Focus();
+            }
+        }
+
+        private void TxtLineValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            DialogPart.DialogLine line = (DialogPart.DialogLine)lbDialogPartLines.SelectedItem;
+            if (line != null)
+            {
+                if (line.Type == DialogPart.LineType.Text)
+                    line.Text = txtLineValue.Text.Replace("\r\n", "\\n");
+                else if (line.Type == DialogPart.LineType.Set)
+                    line.GlobalValue = txtLineValue.Text;
+            }
+        }
+
+        private void TxtLineArg_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            DialogPart.DialogLine line = (DialogPart.DialogLine)lbDialogPartLines.SelectedItem;
+            if (line != null)
+            {
+                if (line.Type == DialogPart.LineType.Run)
+                    line.Text = txtLineArg.Text;
+                else if (line.Type == DialogPart.LineType.Set)
+                    line.GlobalName = txtLineArg.Text;
+            }
+        }
+
+        private void GridGlobalReqs_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            DialogPart part = GetDialogPart(lbDialogParts.SelectedIndex);
+            if (part != null)
+            {
+                object value = e.Row.Cells["Global Name"].Value;
+                if (value is DBNull)
+                    return;
+                part.GlobalRequirements.Remove((string)value);
+            }
+        }
+
+        private void DataLocale_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            if (localeLoaded)
+            {
+                string group = (string)lbLocaleGroups.SelectedItem;
+                Project.CurrentLocaleFile.RemoveEntry(group, (string)e.Row.Cells["LKey"].Value);
+            }
+        }
+
+        private void GridGlobalReqs_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (dialogReqsTable.Rows.Count == e.RowIndex)
+                return;
+            object value = dialogReqsTable.Rows[e.RowIndex]["Global Name"];
+            if (value is DBNull)
+                value = "global_name";
+            currentGlobalReqName = (string)value;
+        }
+
+        private void GridGlobalReqs_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            DialogPart part = GetDialogPart(lbDialogParts.SelectedIndex);
+            if (part != null && e.RowIndex < dialogReqsTable.Rows.Count)
+            {
+                DataRow row = dialogReqsTable.Rows[e.RowIndex];
+                object nameVal = row[0];
+                object valVal = row[1];
+                if (nameVal is DBNull || valVal is DBNull)
+                {
+                    MessageBox.Show("Please enter a valid value.");
+                }
+                else
+                {
+                    string globalName = (string)nameVal;
+                    string globalValue = (string)valVal;
+                    if (e.ColumnIndex == 0 && currentGlobalReqName != null && part.GlobalRequirements.ContainsKey(currentGlobalReqName))
+                    {
+                        part.GlobalRequirements.Remove(currentGlobalReqName);
+                        part.GlobalRequirements[globalName] = globalValue;
+                    }
+                    else
+                        part.GlobalRequirements[globalName] = globalValue;
+                    currentGlobalReqName = null;
+                }
+            }
+        }
+
+        private void TxtFilterDialogs_TextChanged(object sender, EventArgs e)
+        {
+            lbDialogs.Items.Clear();
+            foreach (string dialogFile in Util.GetFileNamesRecursive(Project.Current.GetDialog("")))
+            {
+                if (dialogFile.Contains(txtFilterDialogs.Text))
+                    lbDialogs.Items.Add(new DialogFile(dialogFile));
+            }
+        }
+
         private void LocaleEntryEditor_LocaleEntryChanged(object sender, LocaleEntryEditor.LocaleEntryChangedEventArgs e)
         {
             LocaleEntryRef ler = e.EntryRef;
-            LocaleEntry entry = Project.CurrentLocaleFile.GetEntry(ler.Name);
+            LocaleEntry entry = Project.CurrentLocaleFile.GetEntry(ler.Group, ler.Name);
             foreach (DataRow row in localeDataTable.Rows)
             {
                 if (row[2] == entry)
@@ -145,27 +267,27 @@ namespace TinyEngine
                 TinyItem item = Project.Items.Find(x => x.Name == (string)e.OldValue);
                 item.UpdateName((string)e.ChangedItem.Value);
                 int si = lbItems.SelectedIndex;
-                string kdnameold = "item." + e.OldValue + ".name";
-                string kdescold = "item." + e.OldValue + ".description";
-                string kdname = "item." + item.Name + ".name";
-                string kdesc = "item." + item.Name + ".description";
+                string kdnameold = e.OldValue + ".name";
+                string kdescold = e.OldValue + ".description";
+                string kdname = item.Name + ".name";
+                string kdesc = item.Name + ".description";
                 if (Project.CurrentLocaleFile != null)
                 {
-                    string dname = Project.CurrentLocaleFile.GetEntryValue(kdnameold);
-                    string desc = Project.CurrentLocaleFile.GetEntryValue(kdescold);
+                    string dname = Project.CurrentLocaleFile.GetEntryValue("item", kdnameold);
+                    string desc = Project.CurrentLocaleFile.GetEntryValue("item", kdescold);
                     if (dname != string.Empty)
                     {
-                        Project.CurrentLocaleFile.RemoveEntry(kdnameold);
-                        Project.CurrentLocaleFile.AddEntry(kdname, dname);
+                        Project.CurrentLocaleFile.RemoveEntry("item", kdnameold);
+                        Project.CurrentLocaleFile.AddEntry("item", kdname, dname);
                     }
                     if (desc != string.Empty)
                     {
-                        Project.CurrentLocaleFile.RemoveEntry(kdescold);
-                        Project.CurrentLocaleFile.AddEntry(kdesc, desc);
+                        Project.CurrentLocaleFile.RemoveEntry("item", kdescold);
+                        Project.CurrentLocaleFile.AddEntry("item", kdesc, desc);
                     }
                 }
-                item.Properties["Display Name"] = new LocaleEntryRef("item." + item.Name + ".name");
-                item.Properties["Description"] = new LocaleEntryRef("item." + item.Name + ".description");
+                item.Properties["Display Name"] = new LocaleEntryRef("item", item.Name + ".name");
+                item.Properties["Description"] = new LocaleEntryRef("item", item.Name + ".description");
                 lbItems.Items.RemoveAt(si);
                 lbItems.Items.Insert(si, item);
                 lbItems.Invalidate();
@@ -237,8 +359,17 @@ namespace TinyEngine
 
         public void OnLogMessage(object sender, Log.LogEventArgs args)
         {
-            lbLogs.Items.Add(args);
-            lbLogs.SelectedIndex = lbLogs.Items.Count - 1;
+            if (lbLogs.InvokeRequired)
+                lbLogs.Invoke(new Action(() =>
+                {
+                    lbLogs.Items.Add(args);
+                    lbLogs.SelectedIndex = lbLogs.Items.Count - 1;
+                }));
+            else
+            {
+                lbLogs.Items.Add(args);
+                lbLogs.SelectedIndex = lbLogs.Items.Count - 1;
+            }
         }
 
         private bool mdmp = false;
@@ -308,23 +439,16 @@ namespace TinyEngine
                 entry.Name = (string)nval;
             }
             else
-                Project.CurrentLocaleFile.AddEntry((string)localeDataTable.Rows[e.RowIndex][0], (string)nval);
+            {
+                string group = (string)lbLocaleGroups.SelectedItem;
+                Project.CurrentLocaleFile.AddEntry(group, (string)localeDataTable.Rows[e.RowIndex][0], (string)nval);
+            }
         }
 
         private void DataLocale_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             if (!localeLoaded)
                 return;
-        }
-
-        private void LocaleDataTable_RowDeleted(object sender, DataRowChangeEventArgs e)
-        {
-            if (localeLoaded)
-                Project.CurrentLocaleFile.RemoveEntry((string)e.Row["LKey"]);
-        }
-
-        private void LocaleDataTable_TableNewRow(object sender, DataTableNewRowEventArgs e)
-        {
         }
 
         private void TxtLocaleFilter_TextChanged(object sender, EventArgs e)
@@ -362,7 +486,7 @@ namespace TinyEngine
                 CloseCurrent();
             else if (e.KeyCode == Keys.Delete)
             {
-                if (lbItems.SelectedIndex > -1 && propsItem.SelectedGridItem != null)
+                if (tabs.SelectedTab == tabItems && lbItems.SelectedIndex > -1 && propsItem.SelectedGridItem != null)
                 {
                     string prop = propsItem.SelectedGridItem.Label;
                     TinyItem item = (TinyItem)lbItems.SelectedItem;
@@ -370,6 +494,16 @@ namespace TinyEngine
                     {
                         item.Properties.RemoveKey(prop);
                         lbItems_SelectedIndexChanged(null, null);
+                    }
+                }
+                else if (tabs.SelectedTab == tabEntities && lbEntities.SelectedIndex > -1 && propsEnt.SelectedGridItem != null)
+                {
+                    string prop = propsEnt.SelectedGridItem.Label;
+                    TinyEntity entity = (TinyEntity)lbEntities.SelectedItem;
+                    if (entity.Properties.ContainsKey(prop) && prop != "Display Name")
+                    {
+                        entity.Properties.RemoveKey(prop);
+                        lbEntities_SelectedIndexChanged(null, null);
                     }
                 }
             }
@@ -387,6 +521,12 @@ namespace TinyEngine
                     tab.Script.Save();
                     tab.Text = tab.Script.FileName;
                 }
+            }
+            else if (tabs.SelectedTab == tabDialogs)
+            {
+                DialogFile dialog = (DialogFile)lbDialogs.SelectedItem;
+                if (dialog != null)
+                    btnSaveDialog.PerformClick();
             }
         }
 
@@ -411,6 +551,7 @@ namespace TinyEngine
         {
             localeLoaded = false;
             txtLocaleName.Text = "";
+            lbLocaleGroups.Items.Clear();
             int selected = lbLocales.SelectedIndex;
             Project.CurrentLocaleFile = null;
             if (selected > -1)
@@ -418,9 +559,9 @@ namespace TinyEngine
                 localeDataTable.Rows.Clear();
                 Project.CurrentLocaleFile = new LocaleFile((string)lbLocales.SelectedItem);
                 txtLocaleName.Text = Project.CurrentLocaleFile.LocaleName;
-                foreach (LocaleEntry entry in Project.CurrentLocaleFile.Entries)
+                foreach (string key in Project.CurrentLocaleFile.Entries.Keys)
                 {
-                    localeDataTable.Rows.Add(entry.Name, entry.Value, entry);
+                    lbLocaleGroups.Items.Add(key);
                 }
                 dataLocale.DataSource = localeDataTable;
                 dataLocale.Columns[2].Visible = false;
@@ -442,7 +583,7 @@ namespace TinyEngine
         public void RefreshLocales()
         {
             lbLocales.Items.Clear();
-            foreach (string locale in Project.Current.GetAssets(Project.LANG_DIR))
+            foreach (string locale in Project.Current.GetAssetDirs(Project.LANG_DIR))
             {
                 lbLocales.Items.Add(locale);
             }
@@ -455,16 +596,43 @@ namespace TinyEngine
             Project.Items.Clear();
             XmlDocument doc = new XmlDocument();
             doc.Load(Project.Current.GetConfig("items.xml"));
-            foreach(XmlNode node in doc.GetElementsByTagName("item"))
+            foreach (XmlNode node in doc.GetElementsByTagName("item"))
             {
                 TinyItem i = new TinyItem("null_item");
                 i.Load((XmlElement)node);
-                i.Properties.Add("Display Name", new LocaleEntryRef("item." + i.Name + ".name"));
-                i.Properties.Add("Description", new LocaleEntryRef("item." + i.Name + ".description"));
+                i.Properties.Add("Display Name", new LocaleEntryRef("item", i.Name + ".name"));
+                i.Properties.Add("Description", new LocaleEntryRef("item", i.Name + ".description"));
                 Project.Items.Add(i);
                 lbItems.Items.Add(i);
             }
             lbItems_SelectedIndexChanged(null, null);
+        }
+
+        public void RefreshShops()
+        {
+            lbShops.Items.Clear();
+            Project.Shops.Clear();
+            XmlDocument doc = new XmlDocument();
+            doc.Load(Project.Current.GetConfig("shops.xml"));
+            foreach (XmlNode node in doc.GetElementsByTagName("shop"))
+            {
+                TinyShop shop = new TinyShop("null_shop");
+                shop.Load((XmlElement)node);
+                Project.Shops.Add(shop);
+                lbShops.Items.Add(shop);
+            }
+            lbShops_SelectedIndexChanged(null, null);
+        }
+
+        public void RefreshEntities()
+        {
+            lbEntities.Items.Clear();
+            foreach (string entConfig in Util.GetFileNamesRecursive(Project.Current.GetConfig("entity")))
+            {
+                TinyEntity ent = new TinyEntity(entConfig);
+                ent.Load();
+                lbEntities.Items.Add(ent);
+            }
         }
 
         public void RefreshScripts()
@@ -499,12 +667,25 @@ namespace TinyEngine
             return node;
         }
 
+        public void RefreshDialogs()
+        {
+            lbDialogs.Items.Clear();
+            foreach (string dialogFile in Util.GetFileNamesRecursive(Project.Current.GetDialog("")))
+            {
+                lbDialogs.Items.Add(new DialogFile(dialogFile));
+            }
+            lbDialogs_SelectedIndexChanged(null, null);
+        }
+
         public void RefreshAssets()
         {
             RefreshMaps();
             RefreshLocales();
             RefreshItems();
+            RefreshShops();
+            RefreshEntities();
             RefreshScripts();
+            RefreshDialogs();
         }
 
         private void btnRefreshAssets_Click(object sender, EventArgs e)
@@ -579,6 +760,9 @@ namespace TinyEngine
                 try
                 {
                     MapConverter.ConvertMap(Project.CurrentMapFile.GetPath(), bin);
+                    string deployBinPath = Project.Current.GetMap(Project.CurrentMapFile.Name.Replace(".tmx", ".dat"));
+                    Directory.CreateDirectory(Path.GetDirectoryName(deployBinPath));
+                    File.Copy(bin, deployBinPath, true);
                 }
                 catch (IOException ex)
                 {
@@ -633,7 +817,7 @@ namespace TinyEngine
                 TinyItem i = (TinyItem)lbItems.SelectedItem;
                 propsItem.SelectedObject = new DictionaryPropertyGridAdapter<string, object>(i.Properties);
                 lblItemPreviewInfo.Text = "Name: " + i.Name + "\nDisplay Name: " + ((LocaleEntryRef)i.Properties["Display Name"]).Value + "\nDescription:\n" + ((LocaleEntryRef)i.Properties["Description"]).Value.Replace("\\n", "\r\n");
-                string resourceVal = i.Properties.ContainsKey("resource") ? (string)i.Properties["resource"] : "null";
+                string resourceVal = i.Properties.ContainsKey("resource") ? ((AssetRef)i.Properties["resource"]).Name : "null";
                 string itemBmp = Project.Current.GetBitmap(resourceVal);
                 if (File.Exists(itemBmp))
                     pbItemPreview.Image = Util.LoadImage(itemBmp);
@@ -645,7 +829,7 @@ namespace TinyEngine
         private void btnSaveItem_Click(object sender, EventArgs e)
         {
             string xml = "<items>";
-            foreach(TinyItem item in Project.Items)
+            foreach (TinyItem item in Project.Items)
             {
                 xml += "\n" + item.Save();
             }
@@ -710,8 +894,8 @@ namespace TinyEngine
                 TinyItem i = new TinyItem(name);
                 i.Properties["name"] = name;
                 i.Properties["type"] = TinyItem.ItemTypes.Item;
-                i.Properties["Display Name"] = new LocaleEntryRef("item." + name + ".name");
-                i.Properties["Description"] = new LocaleEntryRef("item." + name + ".description");
+                i.Properties["Display Name"] = new LocaleEntryRef("item", name + ".name");
+                i.Properties["Description"] = new LocaleEntryRef("item", name + ".description");
                 Project.Items.Add(i);
                 lbItems.Items.Add(i);
                 lbItems.SelectedItem = i;
@@ -721,6 +905,411 @@ namespace TinyEngine
         private void btnLaunchConsole_Click(object sender, EventArgs e)
         {
             Process.Start("cmd.exe");
+        }
+
+        private void lbDialogs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lbDialogParts.Items.Clear();
+            lbDialogParts_SelectedIndexChanged(null, null);
+            lbDialogPartLines_SelectedIndexChanged(null, null);
+            if (lbDialogs.SelectedIndex > -1)
+            {
+                DialogFile dialog = (DialogFile)lbDialogs.SelectedItem;
+                dialog.Load();
+                lbDialogParts.Items.Add("[Root]");
+                foreach (DialogPart part in dialog.Parts)
+                    lbDialogParts.Items.Add(part);
+            }
+        }
+
+        private void lbDialogParts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DialogPart part = GetDialogPart(lbDialogParts.SelectedIndex);
+            lbDialogPartLines.Items.Clear();
+            if (part != null)
+            {
+                foreach (DialogPart.DialogLine line in part.Lines)
+                {
+                    lbDialogPartLines.Items.Add(line);
+                }
+                dialogReqsTable.Clear();
+                foreach (KeyValuePair<string, string> req in part.GlobalRequirements)
+                {
+                    dialogReqsTable.Rows.Add(req.Key, req.Value, part);
+                }
+                gridGlobalReqs.DataSource = dialogReqsTable;
+                gridGlobalReqs.Columns[2].Visible = false;
+                gridGlobalReqs.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+            }
+        }
+
+        public DialogPart GetDialogPart(int index)
+        {
+            if (lbDialogs.SelectedIndex < 0)
+                return null;
+            if (index == 0)
+                return ((DialogFile)lbDialogs.SelectedItem).Root;
+            else if (index > 0)
+                return (DialogPart)lbDialogParts.Items[index];
+            return null;
+        }
+
+        private void btnAddDialogPart_Click(object sender, EventArgs e)
+        {
+            int dialogIndex = lbDialogParts.SelectedIndex;
+            dialogIndex = dialogIndex > -1 ? dialogIndex + 1 : lbDialogParts.Items.Count;
+            DialogPart nPart = new DialogPart();
+            DialogFile selected = (DialogFile)lbDialogs.SelectedItem;
+            if (selected != null)
+            {
+                lbDialogParts.Items.Insert(dialogIndex, nPart);
+                if (dialogIndex == selected.Parts.Count + 1)
+                    selected.Parts.Add(nPart);
+                else
+                    selected.Parts.Insert(dialogIndex, nPart);
+            }
+        }
+
+        private void btnDialogPartUp_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = lbDialogParts.SelectedIndex;
+            DialogPart part = GetDialogPart(selectedIndex);
+            DialogFile dialog = (DialogFile)lbDialogs.SelectedItem;
+            if (part != null)
+            {
+                int nIndex = selectedIndex - 1;
+                if (nIndex > 0)
+                {
+                    lbDialogParts.Items.Remove(part);
+                    lbDialogParts.Items.Insert(nIndex, part);
+                    dialog.Parts.Remove(part);
+                    dialog.Parts.Insert(nIndex, part);
+                    lbDialogParts.SelectedItem = part;
+                }
+            }
+        }
+
+        private void btnDialogPartDown_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = lbDialogParts.SelectedIndex;
+            DialogPart part = GetDialogPart(selectedIndex);
+            DialogFile dialog = (DialogFile)lbDialogs.SelectedItem;
+            if (part != null)
+            {
+                int nIndex = selectedIndex + 1;
+                if (nIndex < lbDialogParts.Items.Count)
+                {
+                    lbDialogParts.Items.Remove(part);
+                    lbDialogParts.Items.Insert(nIndex, part);
+                    dialog.Parts.Remove(part);
+                    if (nIndex == dialog.Parts.Count + 1)
+                        dialog.Parts.Add(part);
+                    else
+                        dialog.Parts.Insert(nIndex, part);
+                    lbDialogParts.SelectedItem = part;
+                }
+            }
+        }
+
+        private void btnDeleteDialogPart_Click(object sender, EventArgs e)
+        {
+            DialogPart part = GetDialogPart(lbDialogParts.SelectedIndex);
+            DialogFile dialog = (DialogFile)lbDialogs.SelectedItem;
+            if (part != null && part != dialog.Root)
+            {
+                lbDialogParts.Items.Remove(part);
+                dialog.Parts.Remove(part);
+            }
+        }
+
+        private void lbDialogPartLines_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtLineArg.Text = "";
+            txtLineValue.Text = "";
+            if (lbDialogPartLines.SelectedIndex > -1)
+            {
+                DialogPart.DialogLine line = (DialogPart.DialogLine)lbDialogPartLines.SelectedItem;
+                cbDialogLineType.SelectedItem = line.Type;
+                if (line.Type == DialogPart.LineType.Text)
+                {
+                    txtLineArg.Enabled = false;
+                    txtLineValue.Enabled = true;
+                    txtLineValue.Text = line.Text.Replace("\\n", "\r\n");
+                }
+                else
+                {
+                    txtLineArg.Enabled = true;
+                    if (line.Type == DialogPart.LineType.Run)
+                    {
+                        txtLineArg.Text = line.ScriptName;
+                        txtLineValue.Enabled = false;
+                    }
+                    else if (line.Type == DialogPart.LineType.Set)
+                    {
+                        txtLineArg.Text = line.GlobalName;
+                        txtLineValue.Text = line.GlobalValue;
+                    }
+                }
+            }
+        }
+
+        private void cbDialogLineType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbDialogLineType.SelectedIndex > -1)
+            {
+                DialogPart.DialogLine line = (DialogPart.DialogLine)lbDialogPartLines.SelectedItem;
+                if (line != null)
+                {
+                    DialogPart.LineType selected = (DialogPart.LineType)cbDialogLineType.SelectedItem;
+                    if (selected != line.Type)
+                    {
+                        line.Type = selected;
+                        lbDialogPartLines_SelectedIndexChanged(null, null);
+                    }
+                }
+            }
+        }
+
+        private void btnAddDialogLine_Click(object sender, EventArgs e)
+        {
+            int lineIndex = lbDialogPartLines.SelectedIndex;
+            lineIndex = lineIndex > -1 ? lineIndex + 1 : lbDialogPartLines.Items.Count;
+            DialogPart.DialogLine nLine = new DialogPart.DialogLine("New dialog line.");
+            DialogPart selected = GetDialogPart(lbDialogParts.SelectedIndex);
+            if (selected != null)
+            {
+                lbDialogPartLines.Items.Insert(lineIndex, nLine);
+                if (lineIndex == selected.Lines.Count + 1)
+                    selected.Lines.Add(nLine);
+                else
+                    selected.Lines.Insert(lineIndex, nLine);
+            }
+        }
+
+        private void btnDialogLineUp_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = lbDialogPartLines.SelectedIndex;
+            DialogPart.DialogLine line = (DialogPart.DialogLine)lbDialogPartLines.SelectedItem;
+            DialogPart part = GetDialogPart(lbDialogParts.SelectedIndex);
+            if (line != null && part != null)
+            {
+                int nIndex = selectedIndex - 1;
+                if (nIndex > -1)
+                {
+                    lbDialogPartLines.Items.Remove(line);
+                    lbDialogPartLines.Items.Insert(nIndex, line);
+                    part.Lines.Remove(line);
+                    part.Lines.Insert(nIndex, line);
+                    lbDialogPartLines.SelectedItem = line;
+                }
+            }
+        }
+
+        private void btnDialogLineDown_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = lbDialogPartLines.SelectedIndex;
+            DialogPart.DialogLine line = (DialogPart.DialogLine)lbDialogPartLines.SelectedItem;
+            DialogPart part = GetDialogPart(lbDialogParts.SelectedIndex);
+            if (line != null && part != null)
+            {
+                int nIndex = selectedIndex + 1;
+                if (nIndex < lbDialogPartLines.Items.Count)
+                {
+                    lbDialogPartLines.Items.Remove(line);
+                    lbDialogPartLines.Items.Insert(nIndex, line);
+                    part.Lines.Remove(line);
+                    if (nIndex == part.Lines.Count + 1)
+                        part.Lines.Add(line);
+                    else
+                        part.Lines.Insert(nIndex, line);
+                    lbDialogPartLines.SelectedItem = line;
+                }
+            }
+        }
+
+        private void btnDeleteDialogLine_Click(object sender, EventArgs e)
+        {
+            DialogPart.DialogLine line = (DialogPart.DialogLine)lbDialogPartLines.SelectedItem;
+            DialogPart part = GetDialogPart(lbDialogParts.SelectedIndex);
+            if (line != null && part != null)
+            {
+                lbDialogPartLines.Items.Remove(line);
+                part.Lines.Remove(line);
+            }
+        }
+
+        private void btnSaveDialog_Click(object sender, EventArgs e)
+        {
+            DialogFile selected = (DialogFile)lbDialogs.SelectedItem;
+            if (selected != null)
+            {
+                selected.Save();
+            }
+        }
+
+        private void btnNewDialog_Click(object sender, EventArgs e)
+        {
+            string name = Interaction.InputBox("New dialog file name", "New Dialog");
+            if (string.IsNullOrWhiteSpace(name))
+                MessageBox.Show("Invalid dialog name.");
+            if (!name.EndsWith(".tlk"))
+                name += ".tlk";
+            if (File.Exists(Project.Current.GetDialog(name)))
+                MessageBox.Show("Dialog with this name already exists.");
+            else
+            {
+                FileStream stream = new FileStream(Project.Current.GetDialog(name), FileMode.Create);
+                stream.Write("#\nNew dialog...".GetBytes(), 0, 15);
+                stream.Flush();
+                stream.Close();
+                DialogFile file = new DialogFile(name);
+                lbDialogs.Items.Add(file);
+                lbDialogs.SelectedItem = file;
+            }
+        }
+
+        private void btnDeleteDialog_Click(object sender, EventArgs e)
+        {
+            DialogFile selected = (DialogFile)lbDialogs.SelectedItem;
+            if (selected != null)
+            {
+                if (MessageBox.Show("Are you sure you would like to delete this dialog?", "Delete Dialog", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                {
+                    File.Delete(selected.GetPath());
+                    lbDialogs.Items.Remove(selected);
+                }
+            }
+        }
+
+        private void lbEntities_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            propsEnt.SelectedObject = null;
+            if (lbEntities.SelectedIndex > -1)
+            {
+                TinyEntity ent = (TinyEntity)lbEntities.SelectedItem;
+                propsEnt.SelectedObject = new DictionaryPropertyGridAdapter<string, object>(ent.Properties);
+            }
+        }
+
+        private void btnAddEntProp_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtEntityPropName.Text))
+                return;
+            if (lbEntities.SelectedIndex > -1)
+            {
+                TinyEntity entity = (TinyEntity)lbEntities.SelectedItem;
+                if (!entity.Properties.ContainsKey(txtEntityPropName.Text))
+                {
+                    string type = cbEntityPropType.Text;
+                    object val = txtEntityPropValue.Text;
+                    if (type == "Attack")
+                    {
+                        //TODO: Get attack value from combo box.
+                    }
+                    else if (type == "EquipData")
+                        val = new EquipData();
+                    else if (type == "Inventory")
+                        val = new Inventory();
+                    else if (type == "ShopRef")
+                    {
+                        TinyShop shop = (TinyShop)cbEntityPropValue.SelectedItem;
+                        if (shop == null)
+                            shop = Project.Shops.Find(x => x.Name == cbEntityPropValue.Text);
+                        if (shop != null)
+                            val = shop;
+                        else
+                        {
+                            MessageBox.Show("Invalid shop.", "TinyEngine", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return;
+                        }
+                    }
+                    else if (type == "Stats")
+                        val = new EntityStats();
+                    entity.Properties[txtEntityPropName.Text] = val;
+                    lbEntities_SelectedIndexChanged(null, null);
+                }
+            }
+        }
+
+        private void lbShops_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbEntityPropType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string type = cbEntityPropType.Text;
+            cbEntityPropValue.Visible = false;
+            txtEntityPropValue.Visible = false;
+            if (type == "Attack")
+            {
+                cbEntityPropValue.Visible = true;
+                //TODO: Populate combobox with attacks.
+            }
+            else if (type == "ShopRef")
+            {
+                cbEntityPropValue.Visible = true;
+                foreach (TinyShop shop in Project.Shops)
+                    cbEntityPropValue.Items.Add(shop);
+            }
+            else
+            {
+                txtEntityPropValue.Visible = true;
+            }
+        }
+
+        private void lbLocaleGroups_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            localeDataTable.Clear();
+            if (lbLocaleGroups.SelectedIndex > -1 && localeLoaded)
+            {
+                List<LocaleEntry> entries = Project.CurrentLocaleFile.Entries[(string)lbLocaleGroups.SelectedItem];
+                foreach (LocaleEntry entry in entries)
+                {
+                    if (entry == LocaleEntry.BLANK_LINE || entry is LocaleEntry.CommentEntry)
+                        continue;
+                    localeDataTable.Rows.Add(entry.Name, entry.Value, entry);
+                }
+            }
+            dataLocale.AutoResizeColumns();
+        }
+
+        private void btnCompileAllMaps_Click(object sender, EventArgs e)
+        {
+            ProgressDialog dialog = new ProgressDialog();
+            dialog.SetProgressText("Compiling maps...");
+            new Thread(() =>
+            {
+                int count = lbMaps.Items.Count;
+                int i = 0;
+                foreach (object map in lbMaps.Items)
+                {
+                    MapFile file = (MapFile)map;
+                    dialog.SetProgressText("Compiling map " + file.Name + "...");
+                    dialog.SetProgress(i, count);
+                    string bin = file.GetBinaryPath();
+                    Directory.CreateDirectory(Path.GetDirectoryName(bin));
+                    try
+                    {
+                        MapConverter.ConvertMap(file.GetPath(), bin);
+                        string deployBinPath = Project.Current.GetMap(file.Name.Replace(".tmx", ".dat"));
+                        Directory.CreateDirectory(Path.GetDirectoryName(deployBinPath));
+                        File.Copy(bin, deployBinPath, true);
+                    }
+                    catch (IOException ex)
+                    {
+                        Log.Error("TinyEngine", "Error while compiling map: " + ex.Message + ".");
+                    }
+                    i++;
+                }
+                dialog.OnComplete();
+            }).Start();
+            dialog.ShowDialog();
+        }
+
+        private void btnSaveEntity_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
