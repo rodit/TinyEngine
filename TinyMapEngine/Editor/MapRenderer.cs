@@ -177,6 +177,7 @@ namespace TinyMapEngine.Editor
         public void ToggleDraw(int cap)
         {
             SetDraw(cap, !_draw[cap]);
+			Invalidate();
         }
 
         private Pen _dpen = new Pen(new SolidBrush(Color.Red));
