@@ -259,3 +259,12 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+# Nuget packages
+./packages
+
+# Unwanted/old projects
+/TinyEngine
+/TinyEngineV2
+/TinyMapEditor
+/zBenchmark
