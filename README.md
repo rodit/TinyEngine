@@ -1,5 +1,5 @@
 # TinyEngine
-A map editor and game development tool for tile-based RPG games.
+A map editor and game development tool for tile-based RPG games (such as [TinyRPG](https://github.com/rodit/TinyRPG)).
 
 This tool can be used to design and export maps, items, locale definitions and much more for 2D tile-based RPG game development.
 
