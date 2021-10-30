@@ -6,7 +6,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using ScintillaNET;
 using ScintillaNET_FindReplaceDialog;
-using org.freeinternals.format.classfile;
+using System.Text.RegularExpressions;
+using TinyMapEngine.ClassInfo;
 
 namespace TinyMapEngine
 {
@@ -14,13 +15,12 @@ namespace TinyMapEngine
     {
         private static Dictionary<string, ClassFile> classes = new Dictionary<string, ClassFile>();
         private static Dictionary<string, ClassFile> keywordToClass;
-        private static Dictionary<ClassFile, string> classToKeywords = new Dictionary<ClassFile, string>();
 
         public static ClassFile LoadClassFile(string path)
         {
             if (classes.ContainsKey(path))
                 return classes[path];
-            return classes[path] = new ClassFile(File.ReadAllBytes(Path.Combine(Tiny.Root, "bin", "classes", path)));
+            return new ClassFile(Path.Combine(Tiny.Root, "bin", "classes", path));
         }
 
         public static void Init()
@@ -85,8 +85,23 @@ namespace TinyMapEngine
             Editor.Text = _scriptContent;
             Text = Path.GetFileName(script);
             Editor.AutoCAutoHide = true;
+			Editor.InsertCheck += Editor_InsertCheck;
             LoadClasses();
         }
+
+		private void Editor_InsertCheck(object sender, InsertCheckEventArgs e)
+		{
+			if ((e.Text.EndsWith("\r") || e.Text.EndsWith("\n")))
+			{
+				var curLine = Editor.LineFromPosition(e.Position);
+				var curLineText = Editor.Lines[curLine].Text;
+
+				var indent = Regex.Match(curLineText, @"^[ \t]*");
+				e.Text += indent.Value;
+				if (Regex.IsMatch(curLineText, @"{\s*$"))
+					e.Text += '\t';
+			}
+		}
 
         private void Editor_AutoCCompleted(object sender, AutoCSelectionEventArgs e)
         {
@@ -95,7 +110,7 @@ namespace TinyMapEngine
             if (keywordToClass.ContainsKey(host))
             {
                 string sel = e.Text;
-                Editor.CallTipShow(Editor.CurrentPosition, GetNiceDeclaration(Array.Find(keywordToClass[host].getMethods(), x => GetMethodName(x) == sel).getDeclaration()));
+                Editor.CallTipShow(Editor.CurrentPosition, GetNiceDeclaration(keywordToClass[host].Methods.Find(x => x.Name == sel).Declaration));
             }
         }
 
@@ -107,6 +122,7 @@ namespace TinyMapEngine
                 foreach (string kw in ENGINE_KEYWORDS.Split(' '))
                 {
                     ClassFile cls = keywordToClass[kw];
+                    /*
                     classToKeywords[cls] = "";
                     string keywords = "";
                     if (cls.getMethods() != null)
@@ -136,7 +152,8 @@ namespace TinyMapEngine
                             keywords += " " + field;
                     }
                     classToKeywords[cls] = keywords.Substring(1);
-                    secondaryKeywordsCache += keywords;
+                    */
+                    secondaryKeywordsCache += " " + cls.KeywordCache;
                 }
                 secondaryKeywordsCache = secondaryKeywordsCache.Substring(1);
             }
@@ -145,13 +162,16 @@ namespace TinyMapEngine
 
         private string GetNiceDeclaration(string declaration)
         {
-            string[] parts = System.Text.RegularExpressions.Regex.Split(declaration, "\\s+", System.Text.RegularExpressions.RegexOptions.None);
+            string[] parts = Regex.Split(declaration, "\\s+", RegexOptions.None);
             string nice = "";
             parts[1] = RemovePackage(parts[1]);
             foreach (string part in parts)
             {
-                if (part.StartsWith("("))
-                    nice += "(" + RemovePackage(part.Replace("(", "").Replace(",", "")) + (part.EndsWith(")") ? "" : ",");
+                if (part.Contains("("))
+                {
+                    string mPart = part.Split('(')[1];
+                    nice += "(" + RemovePackage(mPart.Replace(",", "")) + (mPart.EndsWith(")") ? "" : ",");
+                }
                 else if (part.EndsWith(","))
                     nice += " " + RemovePackage(part.Replace(",", "")) + ",";
                 else if (part.EndsWith(")"))
@@ -167,22 +187,6 @@ namespace TinyMapEngine
             string[] parts = className.Split('.');
             if (parts.Length == 1)
                 return parts[0];
-            return parts[parts.Length - 1];
-        }
-
-        private string GetMethodName(MethodInfo info)
-        {
-            string decl = info.getDeclaration();
-            string[] parts = System.Text.RegularExpressions.Regex.Split(decl, "\\s+", System.Text.RegularExpressions.RegexOptions.None);
-            for (int i = 0; i < parts.Length; i++)
-                if (parts[i + 1].Contains("("))
-                    return parts[i];
-            return decl;
-        }
-
-        private string GetFieldName(FieldInfo info)
-        {
-            string[] parts = System.Text.RegularExpressions.Regex.Split(info.getDeclaration(), "\\s+", System.Text.RegularExpressions.RegexOptions.None);
             return parts[parts.Length - 1];
         }
 
@@ -204,32 +208,46 @@ namespace TinyMapEngine
                 Editor.CallTipCancel();
         }
 
-        private void Editor_CharAdded(object sender, CharAddedEventArgs e)
-        {
-            int currentPos = Editor.CurrentPosition;
-            int wordStartPos = Editor.WordStartPosition(currentPos, true);
+		private void Editor_CharAdded(object sender, CharAddedEventArgs e)
+		{
+			int currentPos = Editor.CurrentPosition;
 
-            var lenEntered = currentPos - wordStartPos;
-            if (lenEntered > 0)
-            {
-                string kw = ENGINE_AUTO;
-                string lastWord = Editor.GetLastWord();
-                bool dot = lastWord.EndsWith(".");
-                string[] wordParts = lastWord.Split('.');
-                string host = wordParts[wordParts.Length >= 2 ? wordParts.Length - 2 : 0].Replace(".", "");
-                string sub = "";
-                if (wordParts.Length > 1)
-                    sub = wordParts[wordParts.Length - 1];
+			if (e.Char == '}')
+			{
+				Editor.SearchFlags = SearchFlags.None;
+
+				Editor.TargetStart = currentPos;
+				Editor.TargetEnd = 0;
+
+				if (Editor.SearchInTarget("    }") == (currentPos - 5))
+					Editor.DeleteRange((currentPos - 5), 4);
+				else if (Editor.SearchInTarget("\t}") == (currentPos - 2))
+					Editor.DeleteRange((currentPos - 2), 1);
+			}
+
+			int wordStartPos = Editor.WordStartPosition(currentPos, true);
+
+			var lenEntered = currentPos - wordStartPos;
+			if (lenEntered > 0)
+			{
+				string kw = ENGINE_AUTO;
+				string lastWord = Editor.GetLastWord();
+				bool dot = lastWord.EndsWith(".");
+				string[] wordParts = lastWord.Split('.');
+				string host = wordParts[wordParts.Length >= 2 ? wordParts.Length - 2 : 0].Replace(".", "");
+				string sub = "";
+				if (wordParts.Length > 1)
+					sub = wordParts[wordParts.Length - 1];
                 if (keywordToClass.ContainsKey(host))
-                    kw = classToKeywords[keywordToClass[host]];
-                Editor.AutoCCancel();
-                if (!Editor.AutoCActive)
-                {
-                    int len = dot ? 0 : (wordParts.Length > 1 ? sub.Length : lenEntered);
-                    Editor.AutoCShow(len, kw);
-                }
-            }
-        }
+                    kw = keywordToClass[host].KeywordCache;
+				Editor.AutoCCancel();
+				if (!Editor.AutoCActive)
+				{
+					int len = dot ? 0 : (wordParts.Length > 1 ? sub.Length : lenEntered);
+					Editor.AutoCShow(len, kw);
+				}
+			}
+		}
 
         private int maxLineNumberCharLength;
         private void Editor_TextChanged(object sender, EventArgs e)

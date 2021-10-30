@@ -32,7 +32,7 @@ namespace TinyMapEngine
             }
         }
 
-        public static event EventHandler<MapChangedEventArgs> MapChanged;
+		public static event EventHandler<MapChangedEventArgs> MapChanged;
 
         public static Config Config { get; } = new Config("tiny.cfg");
 
@@ -60,6 +60,8 @@ namespace TinyMapEngine
             TilesetsDir = Path.Combine(MapDev, "tilesets");
             PrefabDir = "prefabs";
             TmpDir = "tmp";
+            Locale = new LocaleFile();
+            Locale.Load("en");
 
             GuiFont.Init();
             ScriptEditorTab.Init();
@@ -87,6 +89,10 @@ namespace TinyMapEngine
                 location.Load(element);
                 WorldLocation.Add(location);
             }
+
+            TinyItem.LoadItemRegistry();
+            Skill.LoadSkillRegistry();
+            StartClass.LoadClassRegistry();
         }
 
         public static string GetAssetPath(string key)

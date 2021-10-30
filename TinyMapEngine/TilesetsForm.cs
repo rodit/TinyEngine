@@ -26,7 +26,7 @@ namespace TinyMapEngine
 
         private void TilesetsForm_Load(object sender, EventArgs e)
         {
-            TopMost = true;
+			FormClosing += TilesetsForm_FormClosing;
             Activated += TilesetsForm_Activated;
             Deactivate += TilesetsForm_Deactivate;
 
@@ -36,7 +36,13 @@ namespace TinyMapEngine
             Tiny.MapChanged += Tiny_MapChanged;
         }
 
-        private void Tiny_MapChanged(object sender, Tiny.MapChangedEventArgs e)
+		private void TilesetsForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Hide();
+			e.Cancel = true;
+		}
+
+		private void Tiny_MapChanged(object sender, Tiny.MapChangedEventArgs e)
         {
             tabsTilesets.TabPages.Clear();
             if (e.Map != null)
@@ -150,5 +156,10 @@ namespace TinyMapEngine
                 CurrentTileset = null;
             }
         }
-    }
+
+		private void chkTopMost_CheckedChanged(object sender, EventArgs e)
+		{
+			TopMost = chkTopMost.Checked;
+		}
+	}
 }

@@ -8,7 +8,7 @@ namespace TinyMapEngine.TinyEngine
     {
         private string _rootDir;
 
-        public string LocaleName { get; set; }
+        public string LocaleName { get { return _rootDir; } }
         public Dictionary<string, List<LocaleEntry>> Entries { get; set; }
 
         public LocaleFile()
@@ -45,7 +45,7 @@ namespace TinyMapEngine.TinyEngine
             return entry.Value;
         }
 
-        public void AddEntry(string group, string key, string value)
+        public LocaleEntry AddEntry(string group, string key, string value)
         {
             LocaleEntry entry = GetEntry(group, key);
             if (entry != null)
@@ -54,7 +54,8 @@ namespace TinyMapEngine.TinyEngine
             {
                 entry = new LocaleEntry(group, key, value);
                 Entries[group].Add(entry);
-            }
+			}
+			return entry;
         }
 
         public void RemoveEntry(string group, string key)
@@ -100,9 +101,9 @@ namespace TinyMapEngine.TinyEngine
 
         public void Save(string group)
         {
-            StreamWriter def = new StreamWriter(File.OpenWrite(Path.Combine(Tiny.Root, "assets", "lang", _rootDir, "lang.def")));
-            foreach (string grp in Entries.Keys)
-                def.WriteLine(grp + ".lang");
+            StreamWriter def = new StreamWriter(File.Open(Path.Combine(Tiny.Root, "assets", "lang", _rootDir, "lang.def"), FileMode.Create, FileAccess.Write));
+			foreach (string grp in Entries.Keys)
+				def.WriteLine(grp + ".lang");
             def.Flush();
             def.Close();
             foreach (KeyValuePair<string, List<LocaleEntry>> entry in Entries)
@@ -110,7 +111,7 @@ namespace TinyMapEngine.TinyEngine
                 if (entry.Key != group)
                     continue;
                 string langFile = entry.Key + ".lang";
-                StreamWriter lang = new StreamWriter(File.OpenWrite(Path.Combine(Tiny.Root, "assets", "lang", _rootDir, langFile)));
+                StreamWriter lang = new StreamWriter(File.Open(Path.Combine(Tiny.Root, "assets", "lang", _rootDir, langFile), FileMode.Create, FileAccess.Write));
                 foreach (LocaleEntry lentry in entry.Value)
                 {
                     if (lentry == LocaleEntry.BLANK_LINE)

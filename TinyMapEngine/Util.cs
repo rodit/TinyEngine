@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using ScintillaNET;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace TinyMapEngine
 {
@@ -201,8 +202,6 @@ namespace TinyMapEngine
             list[index1] = tmp;
         }
 
-
-
         public static string GetLastWord(this Scintilla editor)
         {
             string word = "";
@@ -272,6 +271,51 @@ namespace TinyMapEngine
         public static double NextDouble(this Random r, double min, double max)
         {
             return r.NextDouble() * (max - min) + min;
+        }
+
+		public static void WriteNullAttribute(this XmlWriter writer, string name, string value)
+		{
+			if (!string.IsNullOrWhiteSpace(value))
+				writer.WriteAttributeString(name, value);
+		}
+
+		public static void WriteDefaultAttribute(this XmlWriter writer, string name, object value, object def)
+		{
+			if (!value.Equals(def))
+				writer.WriteAttributeString(name, value.ToString());
+		}
+
+		public static string SpaceCamelCase(this string str)
+		{
+			var r = new Regex(@"
+                (?<=[A-Z])(?=[A-Z][a-z]) |
+                 (?<=[^A-Z])(?=[A-Z]) |
+                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
+			return r.Replace(str, " ");
+		}
+
+        public static Color[] GetPixels(this Bitmap b)
+        {
+            Color[] colors = new Color[b.Width * b.Height];
+            int k = 0;
+            for(int x = 0; x < b.Height; x++)
+            {
+                for(int y = 0; y < b.Width; y++)
+                {
+                    colors[k++] = b.GetPixel(y, x);
+                }
+            }
+            return colors;
+        }
+
+        public static void SetPixels(this Bitmap b, Color[] colors)
+        {
+            for (int i = 0; i < colors.Length; i++)
+            {
+                int x = i % b.Width;
+                int y = i / b.Width;
+                b.SetPixel(x, y, colors[i]);
+            }
         }
     }
 }

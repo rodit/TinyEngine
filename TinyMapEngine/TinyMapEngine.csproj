@@ -8,9 +8,10 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>TinyMapEngine</RootNamespace>
     <AssemblyName>TinyMapEngine</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,92 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="formatclass">
-      <HintPath>..\..\..\..\NugetSource\formatclass.dll</HintPath>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="IKVM.AWT.WinForms, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.AWT.WinForms.dll</HintPath>
+    <Reference Include="NAudio.Vorbis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Vorbis.1.0.0.0\lib\net35\NAudio.Vorbis.dll</HintPath>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Beans, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Beans.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Charsets, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Charsets.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Cldrdata, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Cldrdata.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Corba, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Corba.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Jdbc, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Jdbc.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Localedata, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Localedata.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Management, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Management.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Media, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Media.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Misc, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Misc.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Naming, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Naming.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Nashorn, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Nashorn.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Remoting, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Remoting.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Security, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.SwingAWT, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.SwingAWT.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Text, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Tools, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Tools.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Util, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Util.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.API, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.API.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.Bind, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Bind.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.Crypto, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Crypto.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.Parse, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Parse.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.Transform, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Transform.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.WebServices, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.WebServices.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.XPath, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.XPath.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime.JNI, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.Runtime.JNI.dll</HintPath>
+    <Reference Include="NVorbis, Version=0.8.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NVorbis.0.8.5.0\lib\NVorbis.dll</HintPath>
     </Reference>
     <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
@@ -136,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapCache.cs" />
+    <Compile Include="ClassInfo\ClassFile.cs" />
     <Compile Include="CommandStackViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +91,12 @@
     <Compile Include="Commands\CommandStack.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigEditor.cs" />
+    <Compile Include="CreateItemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateItemForm.Designer.cs">
+      <DependentUpon>CreateItemForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DebugForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,6 +109,15 @@
     </Compile>
     <Compile Include="DialogStringInput.Designer.cs">
       <DependentUpon>DialogStringInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditEntityStatsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditEntityStatsForm.Designer.cs">
+      <DependentUpon>EditEntityStatsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\AntiScrollPanel.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Editor\CollisionTool.cs" />
     <Compile Include="Editor\EntityTool.cs" />
@@ -206,6 +145,33 @@
     <Compile Include="GUI\Gui.cs" />
     <Compile Include="GUI\GuiComponent.cs" />
     <Compile Include="GUI\GuiFont.cs" />
+    <Compile Include="ImagePreviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImagePreviewForm.Designer.cs">
+      <DependentUpon>ImagePreviewForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InterpolatedPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ItemEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ItemEditorForm.Designer.cs">
+      <DependentUpon>ItemEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LocaleEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LocaleEditorForm.Designer.cs">
+      <DependentUpon>LocaleEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LocaleEntryEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LocaleEntryEditForm.Designer.cs">
+      <DependentUpon>LocaleEntryEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -220,6 +186,7 @@
     <Compile Include="Maps\MapLayer.cs" />
     <Compile Include="Maps\MapObject.cs" />
     <Compile Include="Maps\MobSpawn.cs" />
+    <Compile Include="Maps\PackedSpriteSheet.cs" />
     <Compile Include="Maps\ParticleEffect.cs" />
     <Compile Include="Maps\TileLayer.cs" />
     <Compile Include="Maps\Tileset.cs" />
@@ -255,6 +222,7 @@
     <Compile Include="OpenTilesetForm.Designer.cs">
       <DependentUpon>OpenTilesetForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="OrderedDictionary.cs" />
     <Compile Include="ParticleEffectPreview.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -275,6 +243,7 @@
       <DependentUpon>ProgressDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropGridUtil.cs" />
     <Compile Include="ResizeMapForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -299,6 +268,18 @@
     <Compile Include="ScriptSelectorForm.Designer.cs">
       <DependentUpon>ScriptSelectorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SkillTreeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SkillTreeForm.Designer.cs">
+      <DependentUpon>SkillTreeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SoundGroupEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoundGroupEditor.Designer.cs">
+      <DependentUpon>SoundGroupEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="TilesetsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -308,9 +289,26 @@
     <Compile Include="TilesetChooser.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TimePickerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimePickerForm.Designer.cs">
+      <DependentUpon>TimePickerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tiny.cs" />
+    <Compile Include="TinyEngine\EntityStats.cs" />
+    <Compile Include="TinyEngine\ItemStack.cs" />
+    <Compile Include="TinyEngine\Skill.cs" />
+    <Compile Include="TinyEngine\SoundEffectGroup.cs" />
+    <Compile Include="TinyEngine\StartClass.cs" />
+    <Compile Include="TinyEngine\TinyArmour.cs" />
+    <Compile Include="TinyEngine\TinyItemBerry.cs" />
+    <Compile Include="TinyEngine\TinyItemMaterial.cs" />
     <Compile Include="TinyEngine\LocaleEntry.cs" />
     <Compile Include="TinyEngine\LocaleFile.cs" />
+    <Compile Include="TinyEngine\TinyItem.cs" />
+    <Compile Include="TinyEngine\TinyItemEquippable.cs" />
+    <Compile Include="TinyEngine\TinyWeapon.cs" />
     <Compile Include="ToolsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -328,14 +326,32 @@
     <EmbeddedResource Include="CommandStackViewer.resx">
       <DependentUpon>CommandStackViewer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CreateItemForm.resx">
+      <DependentUpon>CreateItemForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DebugForm.resx">
       <DependentUpon>DebugForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DialogStringInput.resx">
       <DependentUpon>DialogStringInput.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="EditEntityStatsForm.resx">
+      <DependentUpon>EditEntityStatsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GuiEditor.resx">
       <DependentUpon>GuiEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImagePreviewForm.resx">
+      <DependentUpon>ImagePreviewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ItemEditorForm.resx">
+      <DependentUpon>ItemEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LocaleEditorForm.resx">
+      <DependentUpon>LocaleEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LocaleEntryEditForm.resx">
+      <DependentUpon>LocaleEntryEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -383,8 +399,17 @@
     <EmbeddedResource Include="ScriptSelectorForm.resx">
       <DependentUpon>ScriptSelectorForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SkillTreeForm.resx">
+      <DependentUpon>SkillTreeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoundGroupEditor.resx">
+      <DependentUpon>SoundGroupEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TilesetsForm.resx">
       <DependentUpon>TilesetsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimePickerForm.resx">
+      <DependentUpon>TimePickerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolsForm.resx">
       <DependentUpon>ToolsForm.cs</DependentUpon>

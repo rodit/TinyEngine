@@ -132,20 +132,25 @@ namespace TinyMapEngine.Editor
             TileLayer layer = MapRenderer.Instance.SelectedLayer;
             if (layer == null)
                 return;
-            TileLayer tl = (TileLayer)layer;
-            CommandStack.Execute(new CommandPaintTile(_map, TilesetsForm.CurrentTileset, tl, TilesetsForm.CurrentSelection.Copy(), MouseAlignedX, MouseAlignedY, (byte)(Rotation & Flip)));
+            TileLayer tl = layer;
+            CommandStack.Execute(new CommandPaintTile(_map, TilesetsForm.CurrentTileset, tl, TilesetsForm.CurrentSelection.Copy(), MouseAlignedX, MouseAlignedY, (byte)(Rotation | Flip)));
         }
 
         private Brush selectedBrush = new SolidBrush(Color.FromArgb(130, Color.LightBlue));
         public override void Paint(Graphics g)
         {
             base.Paint(g);
+            Paint(g, MouseAlignedX, MouseAlignedY, true);
+        }
+
+        public void Paint(Graphics g, int x, int y, bool fade)
+        {
             if (TilesetsForm.CurrentTileset != null && TilesetsForm.CurrentSelection != null)
             {
                 if (TilesetsForm.CurrentSelection.State == TileSelection.SelectionState.Selected)
                 {
                     GraphicsState state = g.Save();
-                    g.TranslateTransform(MouseAlignedX, MouseAlignedY);
+                    g.TranslateTransform(x, y);
                     switch (Rotation)
                     {
                         case Tile.ROT_90:
@@ -171,10 +176,10 @@ namespace TinyMapEngine.Editor
                         g.TranslateTransform(0, TilesetsForm.CurrentSelection.Preview.Height);
                         g.ScaleTransform(1f, -1f);
                     }
-                    g.DrawImage(TilesetsForm.CurrentSelection.Preview, 0, 0, 0.5f);// MouseAlignedX, MouseAlignedY, 0.5f);
+                    g.DrawImage(TilesetsForm.CurrentSelection.Preview, 0, 0, fade ? 0.5f : 1f);// MouseAlignedX, MouseAlignedY, 0.5f);
                     g.Restore(state);
                 }
-                if (IsDown(MouseButtons.Right))
+                if (IsDown(MouseButtons.Right) && fade)
                     g.FillRectangle(selectedBrush, new Rectangle(StartMouseAlignedX, StartMouseAlignedY, MouseAlignedX - StartMouseAlignedX + _map.TileWidth, MouseAlignedY - StartMouseAlignedY + _map.TileHeight));
             }
         }

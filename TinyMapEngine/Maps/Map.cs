@@ -13,7 +13,7 @@ namespace TinyMapEngine.Maps
         public static byte[] MAP_MAGIC { get; } = "TINYMX".GetBytes();
 
         public const byte VERSION_MAJOR = 0;
-        public const byte VERSION_MINOR = 2;
+        public const byte VERSION_MINOR = 3;
 
         public byte VersionMajor { get; private set; }
         public byte VersionMinor { get; private set; }
@@ -68,6 +68,8 @@ namespace TinyMapEngine.Maps
         public List<MobSpawnRegion> MobSpawns { get; set; } = new List<MobSpawnRegion>();
         [Browsable(false)]
         public List<ParticleEffect> ParticleSources { get; set; } = new List<ParticleEffect>();
+        [Browsable(false)]
+        public PackedBitmapSheet PackedSheet { get; set; } = new PackedBitmapSheet();
 
         [Browsable(false)]
         public IEnumerable<MapObject> AllObjects
@@ -306,6 +308,13 @@ namespace TinyMapEngine.Maps
                     ParticleSources.Add(pe);
                 }
             }
+            
+            if(VersionMinor >= 3)
+            {
+                bool hasPackedSheet = reader.ReadBoolean();
+                if (hasPackedSheet)
+                    PackedSheet.Load(reader);
+            }
         }
 
         public void Save(BinaryWriter writer)
@@ -363,6 +372,14 @@ namespace TinyMapEngine.Maps
             writer.WriteIntBE(ParticleSources.Count);
             foreach (ParticleEffect ef in ParticleSources)
                 ef.Save(writer);
+
+            if (PackedSheet.Resources.Count > 0)
+            {
+                writer.Write(true);
+                PackedSheet.Save(writer);
+            }
+            else
+                writer.Write(false);
         }
     }
 

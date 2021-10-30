@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using ScintillaNET;
 using ScintillaNET_FindReplaceDialog;
 using TinyEngine.TinyRPG;
-using org.freeinternals.format.classfile;
+using TinyMapEngine.ClassInfo;
 
 namespace TinyEngine
 {

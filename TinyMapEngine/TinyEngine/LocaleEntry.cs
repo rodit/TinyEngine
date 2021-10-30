@@ -64,7 +64,7 @@ namespace TinyMapEngine.TinyEngine
             {
                 if (Tiny.Locale == null)
                     return;
-                Tiny.Locale.GetEntry(Group, Name).Value = value;
+                Tiny.Locale.GetEntryOrCreate(Group, Name).Value = value;
             }
         }
 

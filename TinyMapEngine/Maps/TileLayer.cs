@@ -78,7 +78,18 @@ namespace TinyMapEngine.Maps
                 {
                     Tileset ts = _map.GetTileset(t.Id.Value);
                     Bitmap b = ts.GetTile(t.Id.Value);
-                    _g.DrawImage(b, x * _map.TileWidth, y * _map.TileHeight, _map.TileWidth, _map.TileHeight);
+                    GraphicsState state = _g.Save();
+                    _g.TranslateTransform(x * _map.TileWidth + _map.TileWidth / 2f, y * _map.TileHeight + _map.TileHeight / 2f);
+                    if (flipRot.HasFlag(Tile.FLIP_X))
+                    {
+                        _g.ScaleTransform(-1f, 1f);
+                    }
+                    if (flipRot.HasFlag(Tile.FLIP_Y))
+                    {
+                        _g.ScaleTransform(1f, -1f);
+                    }
+                    _g.DrawImage(b, -_map.TileWidth / 2f, -_map.TileHeight / 2f, _map.TileWidth, _map.TileHeight);
+                    _g.Restore(state);
                 }
             }
         }

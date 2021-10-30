@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Diagnostics;
+using System.IO.Compression;
+using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 
@@ -23,9 +25,13 @@ namespace TinyMapEngine
         public static ToolsForm toolsForm = new ToolsForm();
         public static DebugForm debugForm = new DebugForm();
         public static PrefabsForm prefabsForm = new PrefabsForm();
+        public static ItemEditorForm itemsForm = new ItemEditorForm();
+        public static LocaleEditorForm localeForm = new LocaleEditorForm();
+        public static SoundGroupEditor soundForm = new SoundGroupEditor();
 
         private bool _loading;
 
+        AntiScrollPanel panel0 = new AntiScrollPanel();
         private void MainForm_Load(object sender, EventArgs e)
         {
             IntPtr dummy = scriptEditor.Handle;
@@ -49,6 +55,12 @@ namespace TinyMapEngine
             KeyDown += MainForm_KeyDown;
             KeyUp += MainForm_KeyUp;
             MouseWheel += MainForm_MouseWheel;
+            panel0.Left = 0;
+            panel0.Top = 0;
+            panel0.Dock = DockStyle.Fill;
+            panel0.AutoScroll = true;
+            mainSplitContainer1.Panel1.Controls.Add(panel0);
+            panel0.Controls.Add(mapRender);
 
             mapRender.ObjectSelected += MapRender_ObjectSelected;
             mapRender.MouseWheel += MainForm_MouseWheel;
@@ -58,11 +70,59 @@ namespace TinyMapEngine
             tabsMapLayers.SelectedIndexChanged += TabsMapLayers_SelectedIndexChanged;
             lbTileLayers.ItemCheck += LbTileLayers_ItemCheck;
 
+            lbPackedBitmaps.DoubleClick += LbPackedBitmaps_DoubleClick;
+
             propsMapObj.PropertyValueChanged += PropsMapObj_PropertyValueChanged;
 
-            _loading = false;
+            MapRenderer.Instance.ToolSelected += Instance_ToolSelected;
 
-            toolsForm.Show();
+            toolTilePainter.Tag = MapRenderer.TileTool;
+            toolEraser.Tag = MapRenderer.EraserTool;
+            toolFloodFill.Tag = MapRenderer.FillTool;
+            toolEntityPainter.Tag = MapRenderer.EntityTool;
+            toolCollisionPainter.Tag = MapRenderer.CollisionTool;
+            toolLightPainter.Tag = MapRenderer.LightTool;
+            toolOpacityPainter.Tag = MapRenderer.OpacityTool;
+            toolMobSpawnPainter.Tag = MapRenderer.MobSpawnTool;
+            toolParticlePainter.Tag = MapRenderer.ParticleTool;
+            toolSelect.Tag = MapRenderer.SelectTool;
+
+            foreach (ToolStripItem c in toolsStrip.Items)
+            {
+                if (c is ToolStripButton && c.Tag is Tool)
+                    c.Click += C_Click;
+            }
+
+            _loading = false;
+        }
+
+        private void LbPackedBitmaps_DoubleClick(object sender, EventArgs e)
+        {
+            if (lbPackedBitmaps.SelectedItem != null)
+            {
+                using (ImagePreviewForm ipf = new ImagePreviewForm())
+                {
+                    ipf.Image = ((KeyValuePair<string, Bitmap>)lbPackedBitmaps.SelectedItem).Value;
+                    ipf.ShowDialog();
+                }
+            }
+        }
+
+        private void C_Click(object sender, EventArgs e)
+        {
+            ToolStripItem c = (ToolStripItem)sender;
+            MapRenderer.Instance.SelectedTool = (Tool)c.Tag;
+        }
+
+        private void Instance_ToolSelected(object sender, MapRenderer.SelectedToolChangedEventArgs e)
+        {
+            foreach (ToolStripItem c in toolsStrip.Items)
+            {
+                if (c is ToolStripButton && c.Tag is Tool)
+                {
+                    ((ToolStripButton)c).Checked = c.Tag == e.Tool;
+                }
+            }
         }
 
         private void MainForm_MouseWheel(object sender, MouseEventArgs e)
@@ -124,6 +184,9 @@ namespace TinyMapEngine
 
             lbTileLayers.Items.Clear();
             lbEntities.Items.Clear();
+            foreach (KeyValuePair<string, Bitmap> d in lbPackedBitmaps.Items)
+                d.Value.Dispose();
+            lbPackedBitmaps.Items.Clear();
             if (e.Map != null)
             {
                 Text = "Tiny Map Engine - " + e.Map.Name;
@@ -136,6 +199,8 @@ namespace TinyMapEngine
                 }
                 foreach (Entity ent in e.Map.Entities)
                     lbEntities.Items.Add(ent);
+                foreach (KeyValuePair<string, Bitmap> kvp in e.Map.PackedSheet.Resources)
+                    lbPackedBitmaps.Items.Add(kvp);
             }
             mapRender.Map = e.Map;
             mapRender.Invalidate();
@@ -329,12 +394,20 @@ namespace TinyMapEngine
                     else
                     {
                         tsForm.Show();
-                        using (BinaryReader reader = new BinaryReader(File.OpenRead(fullPath)))
+                        using (MemoryStream tmp = new MemoryStream())
                         {
-                            Map m = new Map();
-                            m.Load(reader);
-                            CommandStack.Clear();
-                            Tiny.CurrentMap = m;
+                            using (GZipStream stream = new GZipStream(File.OpenRead(fullPath), CompressionMode.Decompress))
+                            {
+                                stream.CopyTo(tmp);
+                            }
+                            tmp.Position = 0;
+                            using (BinaryReader reader = new BinaryReader(tmp))
+                            {
+                                Map m = new Map();
+                                m.Load(reader);
+                                CommandStack.Clear();
+                                Tiny.CurrentMap = m;
+                            }
                         }
                     }
                 }
@@ -347,7 +420,7 @@ namespace TinyMapEngine
             {
                 string writeFile = Path.Combine(Tiny.MapDev, Tiny.CurrentMap.Name);
                 Directory.CreateDirectory(Path.GetDirectoryName(writeFile));
-                using (BinaryWriter writer = new BinaryWriter(File.Open(writeFile, FileMode.Create, FileAccess.Write)))
+                using (BinaryWriter writer = new BinaryWriter(new GZipStream(File.Open(writeFile, FileMode.Create, FileAccess.Write), CompressionMode.Compress)))
                 {
                     Tiny.CurrentMap.Save(writer);
                 }
@@ -470,7 +543,7 @@ namespace TinyMapEngine
 
         private void offsetMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(Tiny.CurrentMap != null)
+            if (Tiny.CurrentMap != null)
             {
                 using (OffsetMapForm omf = new OffsetMapForm())
                 {
@@ -527,7 +600,7 @@ namespace TinyMapEngine
         {
             mapRender.ToggleDraw(MapRenderer.DRAW_LIGHTS);
         }
-        
+
         private void tbZoom_Scroll(object sender, EventArgs e)
         {
             float scale = tbZoom.Value / 100f;
@@ -569,7 +642,7 @@ namespace TinyMapEngine
             if (mapRender.SelectedObject != null)
             {
                 string name = DialogStringInput.GetInput("Prefab Name", mapRender.SelectedObject.Name);
-                if(name != null && !string.IsNullOrWhiteSpace(name))
+                if (name != null && !string.IsNullOrWhiteSpace(name))
                 {
                     if (!name.EndsWith(".pfb"))
                         name += ".pfb";
@@ -606,6 +679,21 @@ namespace TinyMapEngine
                             }
                             g.DrawImage(mapBitmap, 0, 0);
                         }
+                        List<Entity> sortedEnts = mapRender.Map.Entities.OrderByDescending(x => x.RenderLayer).ToList();
+                        foreach (Entity ent in sortedEnts)
+                        {
+                            if (ent.Resource.StartsWith("packed:"))
+                            {
+                                if (mapRender.Map.PackedSheet.Resources.ContainsKey(ent.Resource.Substring(7)))
+                                    g.DrawImage(mapRender.Map.PackedSheet.Resources[ent.Resource.Substring(7)], ent.Bounds);
+                            }
+                            else
+                            {
+                                string entBitmap = Path.Combine(Tiny.Root, "assets", ent.Resource);
+                                if (File.Exists(entBitmap))
+                                    g.DrawImage(BitmapCache.Get(entBitmap), ent.Bounds);
+                            }
+                        }
                         if (mapRender.Map.RenderOnTop.Touched)
                             g.DrawImage(mapRender.Map.RenderOnTop.BackBuffer, 0, 0);
                         if (mapRender.Map.Darkness > 0f)
@@ -615,17 +703,196 @@ namespace TinyMapEngine
                     }
                     preview.Save(tmpPath);
                 }
-                Process.Start(tmpPath);
+                try
+                {
+                    throw new Exception();
+                    //Process.Start(tmpPath);
+                }
+                catch
+                {
+                    using (ImagePreviewForm ipf = new ImagePreviewForm())
+                    {
+                        ipf.Image = Util.LoadImage(tmpPath);
+                        ipf.ShowDialog();
+                        ipf.Image.Dispose();
+                    }
+                }
             }
         }
 
         private void btnPreview_Click(object sender, EventArgs e)
         {
-            if(mapRender.SelectedObject is ParticleEffect)
+            if (mapRender.SelectedObject is ParticleEffect)
             {
                 using (ParticleEffectPreview preview = new ParticleEffectPreview(mapRender.SelectedObject as ParticleEffect))
                 {
                     preview.ShowDialog();
+                }
+            }
+        }
+
+        private void renderOnTopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            cbRot.Checked = !cbRot.Checked;
+        }
+
+        private void itemsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            itemsForm.Show();
+            itemsForm.BringToFront();
+        }
+
+        private void localeEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            localeForm.Show();
+            localeForm.BringToFront();
+        }
+
+        private void soundEffectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            soundForm.Show();
+            soundForm.BringToFront();
+        }
+
+        private void btnMoveLayerUp_Click(object sender, EventArgs e)
+        {
+            if (mapRender.Map != null)
+            {
+                int selIndex = lbTileLayers.SelectedIndex;
+                if (selIndex > 0)
+                {
+                    lbTileLayers.Items.Swap(selIndex, selIndex - 1);
+                    mapRender.Map.TileLayers.Swap(selIndex, selIndex - 1);
+                    mapRender.Invalidate();
+                }
+            }
+        }
+
+        private void btnMoveLayerDown_Click(object sender, EventArgs e)
+        {
+            if (mapRender.Map != null)
+            {
+                int selIndex = lbTileLayers.SelectedIndex;
+                if (selIndex < lbTileLayers.Items.Count - 1)
+                {
+                    lbTileLayers.Items.Swap(selIndex, selIndex + 1);
+                    mapRender.Map.TileLayers.Swap(selIndex, selIndex + 1);
+                    mapRender.Invalidate();
+                }
+            }
+        }
+
+        private void btnNewPackedBitmap_Click(object sender, EventArgs e)
+        {
+            if (mapRender.Map != null)
+            {
+                using (OpenFileDialog ofd = new OpenFileDialog())
+                {
+                    ofd.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+                    if (ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        Bitmap bmp = Util.LoadImage(ofd.FileName);
+                        string internalName = DialogStringInput.GetInput("Enter internal packed resource name", Path.GetFileNameWithoutExtension(ofd.FileName));
+                        if (string.IsNullOrWhiteSpace(internalName))
+                        {
+                            bmp.Dispose();
+                            return;
+                        }
+                        if (mapRender.Map.PackedSheet.Resources.ContainsKey(internalName))
+                        {
+                            MessageBox.Show("Name already in use!");
+                            bmp.Dispose();
+                        }
+                        else
+                        {
+                            mapRender.Map.PackedSheet.Resources.Add(internalName, bmp);
+                            lbPackedBitmaps.Items.Add(new KeyValuePair<string, Bitmap>(internalName, bmp));
+                        }
+                    }
+                }
+            }
+        }
+
+        private void btnCreatePackedFromTiles_Click(object sender, EventArgs e)
+        {
+            if (mapRender.Map != null)
+            {
+                if (TilesetsForm.CurrentTileset != null && TilesetsForm.CurrentSelection != null)
+                {
+                    if (TilesetsForm.CurrentSelection.State == TileSelection.SelectionState.Selected)
+                    {
+                        string internalName = DialogStringInput.GetInput("Enter internal packed resource name", "generated");
+                        if (string.IsNullOrWhiteSpace(internalName))
+                            return;
+                        if (mapRender.Map.PackedSheet.Resources.ContainsKey(internalName))
+                            MessageBox.Show("Name already in use!");
+                        else
+                        {
+                            int minX = TilesetsForm.CurrentSelection.MinX;
+                            int maxX = TilesetsForm.CurrentSelection.MaxX;
+                            int minY = TilesetsForm.CurrentSelection.MinY;
+                            int maxY = TilesetsForm.CurrentSelection.MaxY;
+                            Bitmap bmp = new Bitmap(maxX - minX + mapRender.Map.TileWidth, maxY - minY + mapRender.Map.TileHeight);
+                            Graphics g = Graphics.FromImage(bmp);
+                            MapRenderer.TileTool.Paint(g, 0, 0, false);
+                            g.Dispose();
+                            mapRender.Map.PackedSheet.Resources.Add(internalName, bmp);
+                            lbPackedBitmaps.Items.Add(new KeyValuePair<string, Bitmap>(internalName, bmp));
+                        }
+                    }
+                }
+            }
+        }
+
+        private void btnDeletePackedBitmap_Click(object sender, EventArgs e)
+        {
+            if (mapRender.Map != null)
+            {
+                if (lbPackedBitmaps.SelectedItem != null)
+                {
+                    if (MessageBox.Show("Are you sure you would like to delete this packed bitmap? This cannot be undone.", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    {
+                        KeyValuePair<string, Bitmap> d = (KeyValuePair<string, Bitmap>)lbPackedBitmaps.SelectedItem;
+                        mapRender.Map.PackedSheet.Resources.Remove(d.Key);
+                        d.Value.Dispose();
+                        lbPackedBitmaps.Items.Remove(lbPackedBitmaps.SelectedItem);
+                    }
+                }
+            }
+        }
+
+        private void btnLinkPackedToEntity_Click(object sender, EventArgs e)
+        {
+            if (mapRender.Map != null && mapRender.SelectedObject is Entity && lbPackedBitmaps.SelectedItem != null)
+            {
+                ((Entity)mapRender.SelectedObject).Resource = "packed:" + ((KeyValuePair<string, Bitmap>)lbPackedBitmaps.SelectedItem).Key;
+                propsMapObj.SelectedObject = mapRender.SelectedObject;
+            }
+        }
+
+        private void btnRenamePackedBitmap_Click(object sender, EventArgs e)
+        {
+            if (mapRender.Map != null)
+            {
+                if (lbPackedBitmaps.SelectedItem != null)
+                {
+                    KeyValuePair<string, Bitmap> kvp = (KeyValuePair<string, Bitmap>)lbPackedBitmaps.SelectedItem;
+                    string newName = DialogStringInput.GetInput("New name", kvp.Key);
+                    if (string.IsNullOrWhiteSpace(newName))
+                        MessageBox.Show("Please enter a valid name.");
+                    else
+                    {
+                        mapRender.Map.PackedSheet.Resources.Remove(kvp.Key);
+                        mapRender.Map.PackedSheet.Resources[newName] = kvp.Value;
+                        foreach (Entity ent in mapRender.Map.Entities)
+                            if (ent.Resource == "packed:" + kvp.Key)
+                                ent.Resource = "packed:" + newName;
+                        int selIndex = lbPackedBitmaps.SelectedIndex;
+                        KeyValuePair<string, Bitmap> nkvp = new KeyValuePair<string, Bitmap>(newName, kvp.Value);
+                        lbPackedBitmaps.Items.Insert(selIndex, nkvp);
+                        lbPackedBitmaps.Items.Remove(kvp);
+                        lbPackedBitmaps.SelectedItem = nkvp;
+                    }
                 }
             }
         }

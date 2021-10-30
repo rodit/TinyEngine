@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using TinyMapEngine.Maps;
 using TinyMapEngine.Editor;
 
@@ -37,10 +38,26 @@ namespace TinyMapEngine.Commands
             _old.Clear();
             int minX = _sel.MinX;
             int minY = _sel.MinY;
+            int maxX = _sel.MaxX;
+            int maxY = _sel.MaxY;
+            int width = maxX - minX;
+            int height = maxY - minY;
             foreach (TileSelection.SelectedTile tile in _sel.selected)
             {
                 int posX = (_x + tile.X - minX) / _map.TileWidth;
                 int posY = (_y + tile.Y - minY) / _map.TileHeight;
+                if (_flipRot.HasFlag(TileLayer.Tile.FLIP_X))
+                {
+                    int axis = _x + width / 2;
+                    int pointDiff = axis - posX * _map.TileWidth;
+                    posX = (axis + pointDiff) / _map.TileWidth;
+                }
+                if (_flipRot.HasFlag(TileLayer.Tile.FLIP_Y))
+                {
+                    int axis = _y + height / 2;
+                    int pointDiff = axis - posY * _map.TileHeight;
+                    posY = (axis + pointDiff) / _map.TileHeight;
+                }
                 TileLayer.Tile old = _layer.GetTile(posX, posY);
                 if (old == TileLayer.NullTile)
                     continue;

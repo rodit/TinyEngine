@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 using TinyMapEngine.Maps;
 using TinyMapEngine.Commands;
+using System.Drawing.Imaging;
 
 namespace TinyMapEngine.Editor
 {
@@ -18,7 +19,7 @@ namespace TinyMapEngine.Editor
         public static EraserTool EraserTool { get; } = new EraserTool(null);
         public static FloodFillTool FillTool { get; } = new FloodFillTool(null);
         public static EntityTool EntityTool { get; } = new EntityTool(null);
-        public static CollisionTool CollisionTool { get; } = new CollisionTool(null);
+		public static CollisionTool CollisionTool { get; } = new CollisionTool(null);
         public static LightTool LightTool { get; } = new LightTool(null);
         public static OpacityTool OpacityTool { get; } = new OpacityTool(null);
         public static MobSpawnTool MobSpawnTool { get; } = new MobSpawnTool(null);
@@ -29,13 +30,13 @@ namespace TinyMapEngine.Editor
         public const int DRAW_ENTITIES = 1;
         public const int DRAW_ENTITY_NAMES = 2;
         public const int DRAW_ENTITY_BITMAPS = 3;
-        public const int DRAW_LIGHTS = 4;
-        public const int DRAW_OPACITY = 5;
+		public const int DRAW_LIGHTS = 4;
+		public const int DRAW_OPACITY = 5;
         public const int DRAW_MOB_SPAWNS = 6;
         public const int DRAW_PARTICLE_SOURCES = 7;
 
         public Map Map { get; set; }
-        private bool[] _draw = new bool[] { true, true, true, false, true, true, true, true };
+        private bool[] _draw = new bool[] { true, true, true, true, true, true, true, true };
         public TileLayer SelectedLayer { get; set; }
         private Tool _selectedTool;
         public Tool SelectedTool
@@ -67,15 +68,15 @@ namespace TinyMapEngine.Editor
 
         public MapRenderer() : this(null) { }
 
-        public MapRenderer(Map map)
-        {
-            _instance = this;
-            Map = map;
-            BackColor = Color.Black;
-            DoubleBuffered = true;
-        }
+		public MapRenderer(Map map)
+		{
+			_instance = this;
+			Map = map;
+			BackColor = Color.Black;
+			DoubleBuffered = true;
+		}
 
-        protected override void OnKeyDown(KeyEventArgs e)
+		protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
             SelectedTool?.KeyDown(e);
@@ -190,22 +191,27 @@ namespace TinyMapEngine.Editor
         {
             base.OnPaint(e);
 
-            if (Map == null)
-                return;
+			if (Map == null)
+				return;
 
             Width = (int)(Map.PixelWidth * ScaleFactor);
             Height = (int)(Map.PixelHeight * ScaleFactor);
 
             e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            e.Graphics.ScaleTransform(ScaleFactor, ScaleFactor);
+			e.Graphics.ScaleTransform(ScaleFactor, ScaleFactor);
 
-            foreach (TileLayer layer in Map.TileLayers)
-            {
-                if (layer.Visible)
-                    e.Graphics.DrawImage(layer.BackBuffer, 0, 0);
-            }
-            if (Map.RenderOnTop != null && Map.RenderOnTop.Visible)
-                e.Graphics.DrawImage(Map.RenderOnTop.BackBuffer, 0, 0);
+			foreach (TileLayer layer in Map.TileLayers)
+			{
+				if (layer.Visible)
+				{
+					if (Map.RenderOnTop == SelectedLayer)
+						e.Graphics.DrawImage(layer.BackBuffer, 0, 0, 0.2f);
+					else
+						e.Graphics.DrawImage(layer.BackBuffer, 0, 0);
+				}
+			}
+			if (Map.RenderOnTop != null && Map.RenderOnTop.Visible)
+				e.Graphics.DrawImage(Map.RenderOnTop.BackBuffer, 0, 0);
 
             if (_draw[DRAW_COLISSIONS])
             {
@@ -221,9 +227,17 @@ namespace TinyMapEngine.Editor
                 {
                     if (_draw[DRAW_ENTITY_BITMAPS])
                     {
-                        string entBitmap = Path.Combine(Tiny.Root, "assets", ent.Resource);
-                        if (File.Exists(entBitmap))
-                            e.Graphics.DrawImage(BitmapCache.Get(entBitmap), ent.Bounds);
+                        if (ent.Resource.StartsWith("packed:"))
+                        {
+                            if (Map.PackedSheet.Resources.ContainsKey(ent.Resource.Substring(7)))
+                                e.Graphics.DrawImage(Map.PackedSheet.Resources[ent.Resource.Substring(7)], ent.Bounds);
+                        }
+                        else
+                        {
+                            string entBitmap = Path.Combine(Tiny.Root, "assets", ent.Resource);
+                            if (File.Exists(entBitmap))
+                                e.Graphics.DrawImage(BitmapCache.Get(entBitmap), ent.Bounds);
+                        }
                     }
                     if (ent == SelectedObject)
                         e.Graphics.DrawRectangle(Pens.Red, ent.X - 1, ent.Y - 1, ent.Width + 2, ent.Height + 2);

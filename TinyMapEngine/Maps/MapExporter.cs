@@ -68,15 +68,22 @@ namespace TinyMapEngine.Maps
                 }
             }
             writer.WriteIntBE(map.MobSpawns.Count);
-            foreach(MobSpawnRegion region in map.MobSpawns)
+            foreach (MobSpawnRegion region in map.MobSpawns)
             {
                 region.Save(writer);
             }
             writer.WriteIntBE(map.ParticleSources.Count);
-            foreach(ParticleEffect effect in map.ParticleSources)
+            foreach (ParticleEffect effect in map.ParticleSources)
             {
                 effect.Save(writer);
             }
+            if (map.PackedSheet.Resources.Count > 0)
+            {
+                writer.Write(true);
+                map.PackedSheet.Save(writer);
+            }
+            else
+                writer.Write(false);
         }
 
         public static Bitmap GenerateLightmap(Map map)
